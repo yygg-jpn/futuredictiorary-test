@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Future Dictionary v10 — Admin</title>
+<title>Future Dictionary v10.2 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -492,7 +492,7 @@ to { transform:translate(12px,9px); } }
               <span class="helper-sub">Tiếng Việt: Nhập tên nghệ sĩ bằng ngôn ngữ địa phương.</span>
               <span class="helper-sub">한국어: 아티스트 이름을 현지 언어 표기로 입력하세요.</span>
             </div>
-            <input id="artistNameLocal" required placeholder="塚原 悠也 / 박소영 / 黃嘉瀛">
+            <input id="artistNameLocal" required placeholder="和田ながら / 陈思安 / 梅卓燕 / 老妖精ensemble">
           </div>
 
           <div class="field">
@@ -505,11 +505,11 @@ to { transform:translate(12px,9px); } }
               <span class="helper-sub">Tiếng Việt: Nhập tên nghệ sĩ bằng bảng chữ cái Latin.</span>
               <span class="helper-sub">한국어: 아티스트 이름을 라틴 알파벳으로 입력하세요.</span>
             </div>
-            <input id="artistNameLatin" required placeholder="Yuya Tsukahara">
+            <input id="artistNameLatin" required placeholder="Jarunun Phantachat / Sao Sreymao / Chen Ran / Ayaka Nakama">
           </div>
 
           <div class="field">
-            <label for="titleLocal">Title / Role in Local Language</label><input id="titleLocal" placeholder="振付家 / ダンサー"></div><div class="field"><label for="titleEnglish">Title / Role in English</label><input id="titleEnglish" placeholder="Choreographer / Dancer"></div><div class="field"><label for="baseCity">Base City</label>
+            <label for="titleLocal">Title / Role in Local Language</label><input id="titleLocal" placeholder="振付家 / นักเต้น / 编舞 / 안무가"></div><div class="field"><label for="titleEnglish">Title / Role in English</label><input id="titleEnglish" placeholder="Choreographer / Dancer / Artist / Performer"></div><div class="field"><label for="baseCity">Base City</label>
             <div class="helper6">
               <span class="helper-en">EN: Enter the city where the artist is currently based.</span>
               <span class="helper-sub">中文：请输入艺术家目前主要活动的城市。</span>
@@ -518,7 +518,7 @@ to { transform:translate(12px,9px); } }
               <span class="helper-sub">Tiếng Việt: Nhập thành phố nơi nghệ sĩ hiện đang hoạt động chính.</span>
               <span class="helper-sub">한국어: 현재 아티스트가 주로 활동하는 도시를 입력하세요.</span>
             </div>
-            <input id="baseCity" placeholder="Kyoto">
+            <input id="baseCity" placeholder="Bangkok / Kyoto / Phnom Penh / Hong Kong / Seoul">
           </div>
 
           <div class="field">
@@ -531,7 +531,7 @@ to { transform:translate(12px,9px); } }
               <span class="helper-sub">Tiếng Việt: Nhập quốc gia hoặc khu vực nơi nghệ sĩ hiện đang hoạt động chính.</span>
               <span class="helper-sub">한국어: 현재 아티스트가 주로 활동하는 국가 또는 지역을 입력하세요.</span>
             </div>
-            <input id="baseCountry" placeholder="Japan">
+            <input id="baseCountry" placeholder="Thailand / Japan / Cambodia / Hong Kong / Korea">
           </div>
 
           <div class="field">
@@ -544,7 +544,7 @@ to { transform:translate(12px,9px); } }
               <span class="helper-sub">Tiếng Việt: Nhập ngôn ngữ mà từ này được sử dụng.</span>
               <span class="helper-sub">한국어: 이 단어가 사용되는 언어를 입력하세요.</span>
             </div>
-            <input id="language" required placeholder="日本語 / 한국어 / 中文 / English">
+            <input id="language" required placeholder="ไทย / 日本語 / 中文 / 한국어 / Tiếng Việt / English">
           </div>
 
           <div class="field">
@@ -557,7 +557,7 @@ to { transform:translate(12px,9px); } }
               <span class="helper-sub">Tiếng Việt: Nhập từ theo cách viết trong ngôn ngữ gốc.</span>
               <span class="helper-sub">한국어: 단어를 원래 언어의 표기로 입력하세요.</span>
             </div>
-            <input id="word" required placeholder="Word in the artist's own language">
+            <input id="word" required placeholder="言葉 / คำ / 詞 / 말 / từ">
           </div>
 
           <div class="field">
@@ -585,19 +585,9 @@ to { transform:translate(12px,9px); } }
             </div>
 
             <div class="recordBox">
-              <div class="micDevicePanel">
-                <div class="micDeviceLabel">MICROPHONE</div>
-                <div class="micDeviceControls">
-                  <select id="micDeviceSelect"><option value="">Default microphone</option></select>
-                  <button class="btn ghost" type="button" id="refreshMicBtn">REFRESH</button>
-                </div>
-                <div class="micDiagnostics" id="micDiagnostics">DEVICE: not checked · TRACK: — · ENABLED: — · MUTED: —</div>
-              </div>
-              <button class="btn primary" type="button" id="recordBtn">● RECORD</button>
               <button class="btn ghost" type="button" id="stopRecordBtn" style="display:none;">■ STOP</button>
               <button class="btn ghost" type="button" id="useRecordingBtn" style="display:none;">USE THIS RECORDING</button>
               <button class="btn ghost" type="button" id="reRecordBtn" style="display:none;">RE-RECORD</button>
-              <div class="recordStatus" id="recordStatus">Ready to record. After STOP, press ▶ on the preview to check the sound.</div>
               <div class="micMeterWrap" id="micMeterWrap">
                 <div class="micMeterLabel">MIC INPUT</div>
                 <div class="micMeterTrack"><div class="micMeterBar" id="micMeterBar"></div></div>
@@ -676,12 +666,18 @@ to { transform:translate(12px,9px); } }
       <div class="toolbar">
         <button class="btn ghost" id="exportBtn" type="button">EXPORT MASTER JSON</button>
         <button class="btn ghost" id="importAddBtn" type="button">IMPORT / ADD JSON</button>
-        <button class="btn ghost" id="importReplaceBtn" type="button">IMPORT / REPLACE</button>
         <input id="importFile" type="file" accept=".json,application/json" hidden>
         <input id="importMode" type="hidden" value="add">
       </div>
       <div class="muted" style="margin-top:10px;">
-        IMPORT / ADD merges individual artist JSON files into the current data. EXPORT MASTER JSON creates the consolidated exhibition file including thumbnails and audio.
+        <div class="helper6 masterJsonHelp">
+          <span class="helper-en">EN: IMPORT / ADD merges individual artist JSON files into the current data. EXPORT MASTER JSON creates the consolidated exhibition file including thumbnails and audio.</span>
+          <span class="helper-sub">中文：IMPORT / ADD 会将各艺术家的 JSON 文件追加并合并到当前数据中。EXPORT MASTER JSON 会生成包含缩略图和音频在内的完整展览用数据文件。</span>
+          <span class="helper-sub">日本語：IMPORT / ADD は、各アーティストのJSONファイルを現在のデータに追加・統合します。EXPORT MASTER JSON は、サムネイルと音声を含む展示用の統合データファイルを書き出します。</span>
+          <span class="helper-sub">ไทย: IMPORT / ADD จะเพิ่มและรวมไฟล์ JSON ของศิลปินแต่ละคนเข้ากับข้อมูลปัจจุบัน ส่วน EXPORT MASTER JSON จะสร้างไฟล์ข้อมูลรวมสำหรับนิทรรศการ ซึ่งรวมภาพ thumbnail และไฟล์เสียงไว้ด้วย</span>
+          <span class="helper-sub">Tiếng Việt: IMPORT / ADD sẽ thêm và hợp nhất các tệp JSON của từng nghệ sĩ vào dữ liệu hiện tại. EXPORT MASTER JSON sẽ tạo tệp dữ liệu tổng hợp dành cho triển lãm, bao gồm cả ảnh thumbnail và âm thanh.</span>
+          <span class="helper-sub">한국어: IMPORT / ADD는 각 아티스트의 JSON 파일을 현재 데이터에 추가하고 통합합니다. EXPORT MASTER JSON은 썸네일과 음성을 포함한 전시용 통합 데이터 파일을 생성합니다.</span>
+        </div>
       </div>
     </aside>
   </div>
@@ -1236,7 +1232,7 @@ function makeLangRow(containerId, item={language:'',text:''}) {
 
   const lang=document.createElement('input');
   lang.className='langName';
-  lang.placeholder='Language';
+  lang.placeholder='English / 中文 / 日本語 / ไทย / Tiếng Việt / 한국어';
   lang.value=item.language||'';
 
   const remove=document.createElement('button');
@@ -1497,10 +1493,6 @@ document.getElementById('exportBtn').onclick=async()=>{
 
 document.getElementById('importAddBtn').onclick=()=>{
   document.getElementById('importMode').value='add';
-  document.getElementById('importFile').click();
-};
-document.getElementById('importReplaceBtn').onclick=()=>{
-  document.getElementById('importMode').value='replace';
   document.getElementById('importFile').click();
 };
 
@@ -1842,17 +1834,7 @@ async function enterExhibition() {
 }
 
 
-document.getElementById('refreshMicBtn').onclick=()=>refreshMicrophones(true);
-document.getElementById('micDeviceSelect').addEventListener('change',()=>{
-  const s=document.getElementById('micDeviceSelect');
-  document.getElementById('micDiagnostics').textContent='SELECTED: '+(s.selectedOptions[0]?.textContent||'Default microphone')+' · Press RECORD to test.';
-});
-if(navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
-  navigator.mediaDevices.addEventListener('devicechange',()=>refreshMicrophones(false));
-}
-refreshMicrophones(false);
 
-document.getElementById('recordBtn').onclick=startRecording;
 document.getElementById('stopRecordBtn').onclick=stopRecording;
 document.getElementById('useRecordingBtn').onclick=useRecording;
 document.getElementById('reRecordBtn').onclick=async ()=>{
@@ -1860,12 +1842,6 @@ document.getElementById('reRecordBtn').onclick=async ()=>{
   await startRecording();
 };
 
-document.addEventListener('keydown', e=>{
-  if(e.code==='Space' && mediaRecorder && mediaRecorder.state==='recording') {
-    e.preventDefault();
-    stopRecording();
-  }
-});
 
 document.getElementById('exhibitionBtn').onclick=async ()=>{
   showStatus('OPENING EXHIBITION…');
