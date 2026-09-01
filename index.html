@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Future Dictionary v10.2 — Admin</title>
+<title>Future Dictionary v10.3 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -437,6 +437,18 @@ to { transform:translate(12px,9px); } }
   .micDeviceControls select{flex:1;min-width:0;background:#fff}
   .micDiagnostics{font-size:10px;line-height:1.45;margin-top:8px;opacity:.68;overflow-wrap:anywhere}
   @media(max-width:650px){.micDeviceControls{flex-direction:column}}
+
+  .recordActions{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-shrink:0;
+  }
+  .recordActions .mini{
+    min-height:44px;
+  }
+
+  #meterWrap, .meterWrap, #micMeter, .micMeter, #micLevel, .micLevel { display:none !important; }
 </style>
 </head>
 <body>
@@ -576,22 +588,18 @@ to { transform:translate(12px,9px); } }
           <div class="field full">
             <label for="audio">Pronunciation Audio</label>
             <div class="helper6">
-              <span class="helper-en">EN: Record the pronunciation here, or upload an existing audio file.</span>
-              <span class="helper-sub">中文：可在此直接录制发音，也可以上传已有音频文件。</span>
-              <span class="helper-sub">日本語：ここで発音を録音するか、既存の音声ファイルをアップロードしてください。</span>
-              <span class="helper-sub">ไทย: บันทึกเสียงการออกเสียงที่นี่ หรืออัปโหลดไฟล์เสียงที่มีอยู่</span>
-              <span class="helper-sub">Tiếng Việt: Ghi âm cách phát âm tại đây hoặc tải lên tệp âm thanh có sẵn.</span>
-              <span class="helper-sub">한국어: 여기에서 발음을 직접 녹음하거나 기존 음성 파일을 업로드하세요.</span>
+              <span class="helper-en">EN: Upload an audio file of the pronunciation.</span>
+              <span class="helper-sub">中文：请上传该词发音的音频文件。</span>
+              <span class="helper-sub">日本語：発音の音声ファイルをアップロードしてください。</span>
+              <span class="helper-sub">ไทย: อัปโหลดไฟล์เสียงการออกเสียง</span>
+              <span class="helper-sub">Tiếng Việt: Tải lên tệp âm thanh ghi cách phát âm.</span>
+              <span class="helper-sub">한국어: 발음이 녹음된 음성 파일을 업로드하세요.</span>
             </div>
 
             <div class="recordBox">
               <button class="btn ghost" type="button" id="stopRecordBtn" style="display:none;">■ STOP</button>
               <button class="btn ghost" type="button" id="useRecordingBtn" style="display:none;">USE THIS RECORDING</button>
-              <button class="btn ghost" type="button" id="reRecordBtn" style="display:none;">RE-RECORD</button>
-              <div class="micMeterWrap" id="micMeterWrap">
-                <div class="micMeterLabel">MIC INPUT</div>
-                <div class="micMeterTrack"><div class="micMeterBar" id="micMeterBar"></div></div>
-                <div class="micMeterValue" id="micMeterValue">0%</div>
+              <button class="btn ghost" type="button" id="reRecordBtn" style="display:none;">RE-RECORD</button></div>
               </div>
               <audio id="recordingPreview" controls style="width:100%;display:none;margin-top:10px;"></audio>
             </div>
@@ -1301,11 +1309,25 @@ async function renderList() {
     ].filter(Boolean).join(' · ');
     mid.querySelector('.rword').textContent=item.word || '';
 
+    const actions=document.createElement('div');
+    actions.className='recordActions';
+
     const b=document.createElement('button');
     b.className='mini'; b.textContent='EDIT';
     b.onclick=()=>loadRecord(item.id);
 
-    el.append(img,mid,b);
+    const remove=document.createElement('button');
+    remove.className='mini removeEntry'; remove.textContent='REMOVE';
+    remove.onclick=async()=>{
+      const label=item.artistNameLocal || item.artistNameLatin || item.word || 'this entry';
+      if(!confirm(`Remove ${label}?`)) return;
+      await deleteOne(item.id);
+      await renderList();
+      showStatus('REMOVED');
+    };
+
+    actions.append(b,remove);
+    el.append(img,mid,actions);
     box.appendChild(el);
   });
 }
