@@ -987,7 +987,6 @@ function resetForm() {
   document.getElementById('imageOptimization').textContent='';
   document.getElementById('audioPreview').style.display='none';
   document.getElementById('audioPreview').removeAttribute('src');
-  resetRecorderUI();
 }
 
 async function loadRecord(id) {
@@ -1016,7 +1015,6 @@ async function loadRecord(id) {
   if(currentThumb) { tp.src=currentThumb; tp.style.display='block'; document.getElementById('thumbEmpty').style.display='none'; }
   else { tp.style.display='none'; document.getElementById('thumbEmpty').style.display=''; }
 
-  resetRecorderUI();
   const ap=document.getElementById('audioPreview');
   if(currentAudio) { ap.src=currentAudio; ap.style.display='block'; }
   else { ap.style.display='none'; ap.removeAttribute('src'); }
@@ -1039,7 +1037,6 @@ document.getElementById('thumbnail').addEventListener('change', async e=>{
 document.getElementById('audio').addEventListener('change', async e=>{
   const f=e.target.files[0]; if(!f) return;
   currentAudio=await fileToDataURL(f);
-  resetRecorderUI();
   const a=document.getElementById('audioPreview'); a.src=currentAudio; a.style.display='block';
 });
 
@@ -1490,10 +1487,6 @@ async function enterExhibition() {
   },1200);
 }
 
-
-
-  await startRecording();
-};
 
 
 document.getElementById('exhibitionBtn').onclick=async ()=>{
