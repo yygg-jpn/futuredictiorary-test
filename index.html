@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Future Dictionary — Admin</title>
+<title>Future Dictionary v10 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -140,6 +140,7 @@
     line-height:1.15;
     pointer-events:none;
   }
+  .floatArtist .role { width:100%; font-size:11px; line-height:1.15; opacity:.72; pointer-events:none; }
   .floatArtist .city {
     width:100%;
     font-size:11px;
@@ -255,13 +256,22 @@
 to { transform:translate(12px,9px); } }
 
   .helper6 {
-    font-size:11px;
-    line-height:1.48;
     opacity:.62;
     margin:0 0 9px;
     font-weight:400;
     letter-spacing:0;
     text-transform:none;
+  }
+  .helper6 .helper-en {
+    display:block;
+    font-size:11px;
+    line-height:1.48;
+    margin-bottom:2px;
+  }
+  .helper6 .helper-sub {
+    display:block;
+    font-size:9px;
+    line-height:1.36;
   }
 
   .recordBox {
@@ -350,6 +360,76 @@ to { transform:translate(12px,9px); } }
     opacity:.62;
     font-variant-numeric:tabular-nums;
   }
+
+  .linkrow {
+    display:grid;
+    grid-template-columns:160px minmax(0,1fr) auto;
+    gap:8px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .linkrow select,.linkrow input { background:#fff; }
+  .linkRemove {
+    border:1px solid var(--line);
+    background:transparent;
+    min-height:44px;
+    padding:8px 12px;
+  }
+  .detailLinks {
+    margin:52px auto 0;
+    width:min(760px,92vw);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:28px;
+  }
+  .detailLinkCard {
+    width:166px;
+    text-align:center;
+  }
+  .detailLinkLabel {
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    margin-bottom:9px;
+  }
+  .detailQR {
+    width:156px;
+    height:156px;
+    display:block;
+    margin:0 auto;
+    background:#fff;
+  }
+  .detailLinkText {
+    font-size:10px;
+    line-height:1.35;
+    margin-top:8px;
+    opacity:.58;
+    overflow-wrap:anywhere;
+  }
+  @media (max-width:650px) {
+    .linkrow { grid-template-columns:1fr; }
+  }
+
+  .langrowTop {
+    display:flex;
+    align-items:stretch;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .langrowTop .langName {
+    flex:1;
+    min-width:0;
+    margin:0;
+  }
+  .langRemove {
+    border:1px solid var(--line);
+    background:transparent;
+    padding:0 14px;
+    min-height:44px;
+    font:inherit;
+    cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -378,12 +458,12 @@ to { transform:translate(12px,9px); } }
           <div class="field full">
             <label>Artist Thumbnail</label>
             <div class="helper6">
-              EN: Upload an image that represents the artist.<br>
-              中文：上传一张能够代表艺术家的图片。<br>
-              日本語：アーティストを表す画像をアップロードしてください。<br>
-              ไทย: อัปโหลดภาพที่ใช้แสดงศิลปิน<br>
-              Tiếng Việt: Tải lên hình ảnh đại diện cho nghệ sĩ.<br>
-              한국어: 아티스트를 나타내는 이미지를 업로드하세요.
+              <span class="helper-en">EN: Upload an image that represents the artist.</span>
+              <span class="helper-sub">中文：上传一张能够代表艺术家的图片。</span>
+              <span class="helper-sub">日本語：アーティストを表す画像をアップロードしてください。</span>
+              <span class="helper-sub">ไทย: อัปโหลดภาพที่ใช้แสดงศิลปิน</span>
+              <span class="helper-sub">Tiếng Việt: Tải lên hình ảnh đại diện cho nghệ sĩ.</span>
+              <span class="helper-sub">한국어: 아티스트를 나타내는 이미지를 업로드하세요.</span>
             </div>
             <div class="previewrow">
               <div class="thumbprev"><img id="thumbPreview" alt=""><span id="thumbEmpty">NO IMAGE</span></div>
@@ -398,12 +478,12 @@ to { transform:translate(12px,9px); } }
           <div class="field">
             <label for="artistNameLocal">Artist Name in Local Language</label>
             <div class="helper6">
-              EN: Enter the artist's name as it is written in their local language.<br>
-              中文：请输入艺术家姓名的本地语言写法。<br>
-              日本語：アーティスト名を現地の言語表記で入力してください。<br>
-              ไทย: กรอกชื่อศิลปินตามการเขียนในภาษาท้องถิ่น<br>
-              Tiếng Việt: Nhập tên nghệ sĩ bằng ngôn ngữ địa phương.<br>
-              한국어: 아티스트 이름을 현지 언어 표기로 입력하세요.
+              <span class="helper-en">EN: Enter the artist's name as it is written in their local language.</span>
+              <span class="helper-sub">中文：请输入艺术家姓名的本地语言写法。</span>
+              <span class="helper-sub">日本語：アーティスト名を現地の言語表記で入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกชื่อศิลปินตามการเขียนในภาษาท้องถิ่น</span>
+              <span class="helper-sub">Tiếng Việt: Nhập tên nghệ sĩ bằng ngôn ngữ địa phương.</span>
+              <span class="helper-sub">한국어: 아티스트 이름을 현지 언어 표기로 입력하세요.</span>
             </div>
             <input id="artistNameLocal" required placeholder="塚原 悠也 / 박소영 / 黃嘉瀛">
           </div>
@@ -411,25 +491,25 @@ to { transform:translate(12px,9px); } }
           <div class="field">
             <label for="artistNameLatin">Artist Name in Latin Alphabet</label>
             <div class="helper6">
-              EN: Enter the artist's name using the Latin alphabet.<br>
-              中文：请用拉丁字母输入艺术家的姓名。<br>
-              日本語：アーティスト名をアルファベットで入力してください。<br>
-              ไทย: กรอกชื่อศิลปินด้วยอักษรละติน<br>
-              Tiếng Việt: Nhập tên nghệ sĩ bằng bảng chữ cái Latin.<br>
-              한국어: 아티스트 이름을 라틴 알파벳으로 입력하세요.
+              <span class="helper-en">EN: Enter the artist's name using the Latin alphabet.</span>
+              <span class="helper-sub">中文：请用拉丁字母输入艺术家的姓名。</span>
+              <span class="helper-sub">日本語：アーティスト名をアルファベットで入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกชื่อศิลปินด้วยอักษรละติน</span>
+              <span class="helper-sub">Tiếng Việt: Nhập tên nghệ sĩ bằng bảng chữ cái Latin.</span>
+              <span class="helper-sub">한국어: 아티스트 이름을 라틴 알파벳으로 입력하세요.</span>
             </div>
             <input id="artistNameLatin" required placeholder="Yuya Tsukahara">
           </div>
 
           <div class="field">
-            <label for="baseCity">Base City</label>
+            <label for="titleLocal">Title / Role in Local Language</label><input id="titleLocal" placeholder="振付家 / ダンサー"></div><div class="field"><label for="titleEnglish">Title / Role in English</label><input id="titleEnglish" placeholder="Choreographer / Dancer"></div><div class="field"><label for="baseCity">Base City</label>
             <div class="helper6">
-              EN: Enter the city where the artist is currently based.<br>
-              中文：请输入艺术家目前主要活动的城市。<br>
-              日本語：現在の主な活動拠点となる都市を入力してください。<br>
-              ไทย: กรอกเมืองที่ศิลปินพำนักและทำงานเป็นหลักในปัจจุบัน<br>
-              Tiếng Việt: Nhập thành phố nơi nghệ sĩ hiện đang hoạt động chính.<br>
-              한국어: 현재 아티스트가 주로 활동하는 도시를 입력하세요.
+              <span class="helper-en">EN: Enter the city where the artist is currently based.</span>
+              <span class="helper-sub">中文：请输入艺术家目前主要活动的城市。</span>
+              <span class="helper-sub">日本語：現在の主な活動拠点となる都市を入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกเมืองที่ศิลปินพำนักและทำงานเป็นหลักในปัจจุบัน</span>
+              <span class="helper-sub">Tiếng Việt: Nhập thành phố nơi nghệ sĩ hiện đang hoạt động chính.</span>
+              <span class="helper-sub">한국어: 현재 아티스트가 주로 활동하는 도시를 입력하세요.</span>
             </div>
             <input id="baseCity" placeholder="Kyoto">
           </div>
@@ -437,12 +517,12 @@ to { transform:translate(12px,9px); } }
           <div class="field">
             <label for="baseCountry">Base Country / Region</label>
             <div class="helper6">
-              EN: Enter the country or region where the artist is currently based.<br>
-              中文：请输入艺术家目前主要活动的国家或地区。<br>
-              日本語：現在の主な活動拠点となる国・地域を入力してください。<br>
-              ไทย: กรอกประเทศหรือภูมิภาคที่ศิลปินพำนักและทำงานเป็นหลักในปัจจุบัน<br>
-              Tiếng Việt: Nhập quốc gia hoặc khu vực nơi nghệ sĩ hiện đang hoạt động chính.<br>
-              한국어: 현재 아티스트가 주로 활동하는 국가 또는 지역을 입력하세요.
+              <span class="helper-en">EN: Enter the country or region where the artist is currently based.</span>
+              <span class="helper-sub">中文：请输入艺术家目前主要活动的国家或地区。</span>
+              <span class="helper-sub">日本語：現在の主な活動拠点となる国・地域を入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกประเทศหรือภูมิภาคที่ศิลปินพำนักและทำงานเป็นหลักในปัจจุบัน</span>
+              <span class="helper-sub">Tiếng Việt: Nhập quốc gia hoặc khu vực nơi nghệ sĩ hiện đang hoạt động chính.</span>
+              <span class="helper-sub">한국어: 현재 아티스트가 주로 활동하는 국가 또는 지역을 입력하세요.</span>
             </div>
             <input id="baseCountry" placeholder="Japan">
           </div>
@@ -450,12 +530,12 @@ to { transform:translate(12px,9px); } }
           <div class="field">
             <label for="language">Language of the Word</label>
             <div class="helper6">
-              EN: Enter the language in which this word is used.<br>
-              中文：请输入这个词所使用的语言。<br>
-              日本語：この言葉が使われている言語を入力してください。<br>
-              ไทย: กรอกภาษาที่ใช้คำนี้<br>
-              Tiếng Việt: Nhập ngôn ngữ mà từ này được sử dụng.<br>
-              한국어: 이 단어가 사용되는 언어를 입력하세요.
+              <span class="helper-en">EN: Enter the language in which this word is used.</span>
+              <span class="helper-sub">中文：请输入这个词所使用的语言。</span>
+              <span class="helper-sub">日本語：この言葉が使われている言語を入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกภาษาที่ใช้คำนี้</span>
+              <span class="helper-sub">Tiếng Việt: Nhập ngôn ngữ mà từ này được sử dụng.</span>
+              <span class="helper-sub">한국어: 이 단어가 사용되는 언어를 입력하세요.</span>
             </div>
             <input id="language" required placeholder="日本語 / 한국어 / 中文 / English">
           </div>
@@ -463,12 +543,12 @@ to { transform:translate(12px,9px); } }
           <div class="field">
             <label for="word">Original Word</label>
             <div class="helper6">
-              EN: Enter the word in its original writing.<br>
-              中文：请输入这个词的原文写法。<br>
-              日本語：言葉を元の言語の表記で入力してください。<br>
-              ไทย: กรอกคำด้วยรูปแบบการเขียนในภาษาต้นฉบับ<br>
-              Tiếng Việt: Nhập từ theo cách viết trong ngôn ngữ gốc.<br>
-              한국어: 단어를 원래 언어의 표기로 입력하세요.
+              <span class="helper-en">EN: Enter the word in its original writing.</span>
+              <span class="helper-sub">中文：请输入这个词的原文写法。</span>
+              <span class="helper-sub">日本語：言葉を元の言語の表記で入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกคำด้วยรูปแบบการเขียนในภาษาต้นฉบับ</span>
+              <span class="helper-sub">Tiếng Việt: Nhập từ theo cách viết trong ngôn ngữ gốc.</span>
+              <span class="helper-sub">한국어: 단어를 원래 언어의 표기로 입력하세요.</span>
             </div>
             <input id="word" required placeholder="Word in the artist's own language">
           </div>
@@ -476,12 +556,12 @@ to { transform:translate(12px,9px); } }
           <div class="field">
             <label for="pronunciationGuide">Pronunciation Guide (optional)</label>
             <div class="helper6">
-              EN: If helpful, write how the word can be pronounced using Latin letters or another readable notation.<br>
-              中文：如有需要，请用拉丁字母或其他易读的方式标注这个词的发音。<br>
-              日本語：必要であれば、アルファベットなどを使って発音の目安を入力してください。<br>
-              ไทย: หากจำเป็น ให้เขียนแนวทางการออกเสียงด้วยอักษรละตินหรือรูปแบบที่อ่านเข้าใจได้<br>
-              Tiếng Việt: Nếu cần, hãy ghi cách phát âm bằng chữ Latin hoặc một cách ghi dễ đọc khác.<br>
-              한국어: 필요하다면 라틴 문자 등 읽기 쉬운 방식으로 발음 표기를 입력하세요.
+              <span class="helper-en">EN: If helpful, write how the word can be pronounced using Latin letters or another readable notation.</span>
+              <span class="helper-sub">中文：如有需要，请用拉丁字母或其他易读的方式标注这个词的发音。</span>
+              <span class="helper-sub">日本語：必要であれば、アルファベットなどを使って発音の目安を入力してください。</span>
+              <span class="helper-sub">ไทย: หากจำเป็น ให้เขียนแนวทางการออกเสียงด้วยอักษรละตินหรือรูปแบบที่อ่านเข้าใจได้</span>
+              <span class="helper-sub">Tiếng Việt: Nếu cần, hãy ghi cách phát âm bằng chữ Latin hoặc một cách ghi dễ đọc khác.</span>
+              <span class="helper-sub">한국어: 필요하다면 라틴 문자 등 읽기 쉬운 방식으로 발음 표기를 입력하세요.</span>
             </div>
             <input id="pronunciationGuide" placeholder="Write it in a way that helps others pronounce it">
           </div>
@@ -489,12 +569,12 @@ to { transform:translate(12px,9px); } }
           <div class="field full">
             <label for="audio">Pronunciation Audio</label>
             <div class="helper6">
-              EN: Record the pronunciation here, or upload an existing audio file.<br>
-              中文：可在此直接录制发音，也可以上传已有音频文件。<br>
-              日本語：ここで発音を録音するか、既存の音声ファイルをアップロードしてください。<br>
-              ไทย: บันทึกเสียงการออกเสียงที่นี่ หรืออัปโหลดไฟล์เสียงที่มีอยู่<br>
-              Tiếng Việt: Ghi âm cách phát âm tại đây hoặc tải lên tệp âm thanh có sẵn.<br>
-              한국어: 여기에서 발음을 직접 녹음하거나 기존 음성 파일을 업로드하세요.
+              <span class="helper-en">EN: Record the pronunciation here, or upload an existing audio file.</span>
+              <span class="helper-sub">中文：可在此直接录制发音，也可以上传已有音频文件。</span>
+              <span class="helper-sub">日本語：ここで発音を録音するか、既存の音声ファイルをアップロードしてください。</span>
+              <span class="helper-sub">ไทย: บันทึกเสียงการออกเสียงที่นี่ หรืออัปโหลดไฟล์เสียงที่มีอยู่</span>
+              <span class="helper-sub">Tiếng Việt: Ghi âm cách phát âm tại đây hoặc tải lên tệp âm thanh có sẵn.</span>
+              <span class="helper-sub">한국어: 여기에서 발음을 직접 녹음하거나 기존 음성 파일을 업로드하세요.</span>
             </div>
 
             <div class="recordBox">
@@ -521,26 +601,40 @@ to { transform:translate(12px,9px); } }
           <div class="field full">
             <label>Description / Commentary</label>
             <div class="helper6">
-              EN: Explain what this word means to you, how you use it, and how it relates to your artistic practice. Long texts are welcome.<br>
-              中文：请说明这个词对你的意义、你如何使用它，以及它与你的艺术实践有怎样的关系。欢迎较长的文字。<br>
-              日本語：この言葉があなたにとってどのような意味を持ち、どのように使われ、作品づくりとどう関係しているかを説明してください。長文でも構いません。<br>
-              ไทย: อธิบายว่าคำนี้มีความหมายต่อคุณอย่างไร คุณใช้คำนี้อย่างไร และคำนี้เกี่ยวข้องกับการทำงานศิลปะของคุณอย่างไร สามารถเขียนข้อความยาวได้<br>
-              Tiếng Việt: Hãy giải thích từ này có ý nghĩa gì với bạn, bạn sử dụng nó như thế nào và nó liên quan đến thực hành nghệ thuật của bạn ra sao. Có thể viết dài.<br>
-              한국어: 이 단어가 자신에게 어떤 의미인지, 어떻게 사용하는지, 그리고 자신의 예술 작업과 어떤 관련이 있는지 설명해 주세요. 긴 글도 괜찮습니다.
+              <span class="helper-en">EN: Explain what this word means to you, how you use it, and how it relates to your artistic practice. Long texts are welcome.</span>
+              <span class="helper-sub">中文：请说明这个词对你的意义、你如何使用它，以及它与你的艺术实践有怎样的关系。欢迎较长的文字。</span>
+              <span class="helper-sub">日本語：この言葉があなたにとってどのような意味を持ち、どのように使われ、作品づくりとどう関係しているかを説明してください。長文でも構いません。</span>
+              <span class="helper-sub">ไทย: อธิบายว่าคำนี้มีความหมายต่อคุณอย่างไร คุณใช้คำนี้อย่างไร และคำนี้เกี่ยวข้องกับการทำงานศิลปะของคุณอย่างไร สามารถเขียนข้อความยาวได้</span>
+              <span class="helper-sub">Tiếng Việt: Hãy giải thích từ này có ý nghĩa gì với bạn, bạn sử dụng nó như thế nào và nó liên quan đến thực hành nghệ thuật của bạn ra sao. Có thể viết dài.</span>
+              <span class="helper-sub">한국어: 이 단어가 자신에게 어떤 의미인지, 어떻게 사용하는지, 그리고 자신의 예술 작업과 어떤 관련이 있는지 설명해 주세요. 긴 글도 괜찮습니다.</span>
             </div>
             <div id="descriptions"></div>
             <button class="btn ghost" type="button" id="addDescriptionBtn" style="margin-top:8px;">+ ADD LANGUAGE</button>
           </div>
 
           <div class="field full">
+            <label>Artist Links</label>
+            <div class="helper6">
+              <span class="helper-en">EN: Add Instagram, a website, or another public link. A QR code will be generated automatically on the artist page.</span>
+              <span class="helper-sub">中文：添加 Instagram、网站或其他公开链接。艺术家页面会自动生成二维码。</span>
+              <span class="helper-sub">日本語：Instagram、ウェブサイトなどの公開URLを登録してください。個別ページでQRコードを自動生成します。</span>
+              <span class="helper-sub">ไทย: เพิ่ม Instagram เว็บไซต์ หรือลิงก์สาธารณะอื่น ระบบจะสร้าง QR code อัตโนมัติในหน้าศิลปิน</span>
+              <span class="helper-sub">Tiếng Việt: Thêm Instagram, website hoặc liên kết công khai khác. Mã QR sẽ được tạo tự động trên trang nghệ sĩ.</span>
+              <span class="helper-sub">한국어: Instagram, 웹사이트 등 공개 링크를 추가하세요. 아티스트 페이지에서 QR 코드가 자동 생성됩니다.</span>
+            </div>
+            <div id="artistLinks"></div>
+            <button class="btn ghost" type="button" id="addLinkBtn" style="margin-top:8px;">+ ADD LINK</button>
+          </div>
+
+          <div class="field full">
             <label>Visibility</label>
             <div class="helper6">
-              EN: Choose whether this entry appears in Exhibition Mode.<br>
-              中文：选择是否在展示模式中显示此条目。<br>
-              日本語：この登録内容を展示モードに表示するか選択してください。<br>
-              ไทย: เลือกว่าจะแสดงรายการนี้ในโหมดนิทรรศการหรือไม่<br>
-              Tiếng Việt: Chọn có hiển thị mục này trong Chế độ Triển lãm hay không.<br>
-              한국어: 이 항목을 전시 모드에 표시할지 선택하세요.
+              <span class="helper-en">EN: Choose whether this entry appears in Exhibition Mode.</span>
+              <span class="helper-sub">中文：选择是否在展示模式中显示此条目。</span>
+              <span class="helper-sub">日本語：この登録内容を展示モードに表示するか選択してください。</span>
+              <span class="helper-sub">ไทย: เลือกว่าจะแสดงรายการนี้ในโหมดนิทรรศการหรือไม่</span>
+              <span class="helper-sub">Tiếng Việt: Chọn có hiển thị mục này trong Chế độ Triển lãm hay không.</span>
+              <span class="helper-sub">한국어: 이 항목을 전시 모드에 표시할지 선택하세요.</span>
             </div>
             <div class="switchrow">
               <input id="visible" type="checkbox" checked>
@@ -565,12 +659,14 @@ to { transform:translate(12px,9px); } }
       <div class="records" id="records"></div>
 
       <div class="toolbar">
-        <button class="btn ghost" id="exportBtn" type="button">EXPORT DATA</button>
-        <button class="btn ghost" id="importBtn" type="button">IMPORT DATA</button>
+        <button class="btn ghost" id="exportBtn" type="button">EXPORT MASTER JSON</button>
+        <button class="btn ghost" id="importAddBtn" type="button">IMPORT / ADD JSON</button>
+        <button class="btn ghost" id="importReplaceBtn" type="button">IMPORT / REPLACE</button>
         <input id="importFile" type="file" accept=".json,application/json" hidden>
+        <input id="importMode" type="hidden" value="add">
       </div>
       <div class="muted" style="margin-top:10px;">
-        Export creates a JSON backup including thumbnails and audio. Import restores that backup on another device.
+        IMPORT / ADD merges individual artist JSON files into the current data. EXPORT MASTER JSON creates the consolidated exhibition file including thumbnails and audio.
       </div>
     </aside>
   </div>
@@ -607,6 +703,7 @@ to { transform:translate(12px,9px); } }
         <audio id="detailAudio" preload="auto"></audio>
 
         <div id="detailDescriptions" class="detailDescriptions"></div>
+        <div id="detailLinks" class="detailLinks"></div>
       </div>
     </div>
   </div>
@@ -1000,14 +1097,74 @@ function fileToDataURL(file) {
 }
 
 
+
+function makeLinkRow(item={type:'Instagram',url:''}) {
+  const row=document.createElement('div');
+  row.className='linkrow';
+
+  const type=document.createElement('select');
+  type.className='linkType';
+  ['Instagram','Website','Other'].forEach(v=>{
+    const option=document.createElement('option');
+    option.value=v;
+    option.textContent=v;
+    type.appendChild(option);
+  });
+  type.value=item.type||'Instagram';
+
+  const url=document.createElement('input');
+  url.className='linkURL';
+  url.type='url';
+  url.placeholder='https://...';
+  url.value=item.url||'';
+
+  const remove=document.createElement('button');
+  remove.type='button';
+  remove.className='linkRemove';
+  remove.textContent='REMOVE';
+  remove.onclick=()=>row.remove();
+
+  row.append(type,url,remove);
+  return row;
+}
+
+function addLinkRow(item={type:'Instagram',url:''}) {
+  document.getElementById('artistLinks').appendChild(makeLinkRow(item));
+}
+
+function setLinks(items=[]) {
+  const box=document.getElementById('artistLinks');
+  if(!box) return;
+  box.innerHTML='';
+  items.forEach(item=>addLinkRow(item));
+}
+
+function collectLinks() {
+  return [...document.querySelectorAll('#artistLinks .linkrow')]
+    .map(row=>({
+      type:row.querySelector('.linkType').value,
+      url:row.querySelector('.linkURL').value.trim()
+    }))
+    .filter(x=>x.url);
+}
+
 function makeLangRow(containerId, item={language:'',text:''}) {
   const row=document.createElement('div');
   row.className='langrow';
+
+  const top=document.createElement('div');
+  top.className='langrowTop';
 
   const lang=document.createElement('input');
   lang.className='langName';
   lang.placeholder='Language';
   lang.value=item.language||'';
+
+  const remove=document.createElement('button');
+  remove.type='button';
+  remove.className='langRemove';
+  remove.textContent='REMOVE';
+  remove.onclick=()=>row.remove();
 
   const isDescription = containerId==='descriptions';
   const textEl=document.createElement(isDescription?'textarea':'input');
@@ -1015,7 +1172,8 @@ function makeLangRow(containerId, item={language:'',text:''}) {
   textEl.placeholder=isDescription ? 'Description / commentary' : '';
   textEl.value=item.text||'';
 
-  row.append(lang,textEl);
+  top.append(lang,remove);
+  row.append(top,textEl);
   return row;
 }
 
@@ -1079,6 +1237,7 @@ async function renderList() {
 
 function resetForm() {
   document.getElementById('form').reset();
+  setLinks([]);
   document.getElementById('recordId').value='';
   document.getElementById('visible').checked=true;
   document.getElementById('deleteBtn').style.display='none';
@@ -1102,6 +1261,9 @@ async function loadRecord(id) {
   document.getElementById('recordId').value=x.id;
   document.getElementById('artistNameLocal').value=x.artistNameLocal||x.artistName||'';
   document.getElementById('artistNameLatin').value=x.artistNameLatin||x.artistName||'';
+  document.getElementById('titleLocal').value=x.titleLocal||'';
+  document.getElementById('titleEnglish').value=x.titleEnglish||'';
+  setLinks(Array.isArray(x.links) ? x.links : []);
   const legacyBase=(x.base||'').split('/').map(s=>s.trim());
   document.getElementById('baseCity').value=x.baseCity||legacyBase[0]||'';
   document.getElementById('baseCountry').value=x.baseCountry||legacyBase.slice(1).join(' / ')||'';
@@ -1185,6 +1347,9 @@ document.getElementById('form').addEventListener('submit', async e=>{
       artistNameLocal:document.getElementById('artistNameLocal').value.trim(),
       artistNameLatin:document.getElementById('artistNameLatin').value.trim(),
       artistName:document.getElementById('artistNameLatin').value.trim(),
+      titleLocal:document.getElementById('titleLocal').value.trim(),
+      titleEnglish:document.getElementById('titleEnglish').value.trim(),
+      links:collectLinks(),
       baseCity:document.getElementById('baseCity').value.trim(),
       baseCountry:document.getElementById('baseCountry').value.trim(),
       base:[document.getElementById('baseCity').value.trim(),document.getElementById('baseCountry').value.trim()].filter(Boolean).join(' / '),
@@ -1233,29 +1398,87 @@ document.getElementById('deleteBtn').onclick=async()=>{
 
 document.getElementById('exportBtn').onclick=async()=>{
   const data=await getAll();
-  const blob=new Blob([JSON.stringify({version:1, exportedAt:new Date().toISOString(), entries:data},null,2)],{type:'application/json'});
+  const payload={
+    schema:'future-dictionary',
+    schemaVersion:2,
+    exportedAt:new Date().toISOString(),
+    entryCount:data.length,
+    entries:data
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url; a.download='future-dictionary-data.json'; a.click();
+  const stamp=new Date().toISOString().slice(0,10).replaceAll('-','');
+  a.href=url;
+  a.download=`future-dictionary-master-${stamp}.json`;
+  a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
-  showStatus('Exported');
+  showStatus(`MASTER JSON EXPORTED · ${data.length} ENTRIES`);
 };
 
-document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importAddBtn').onclick=()=>{
+  document.getElementById('importMode').value='add';
+  document.getElementById('importFile').click();
+};
+document.getElementById('importReplaceBtn').onclick=()=>{
+  document.getElementById('importMode').value='replace';
+  document.getElementById('importFile').click();
+};
+
+function entryFingerprint(x) {
+  return [
+    x.artistNameLatin||x.artistName||'',
+    x.artistNameLocal||'',
+    x.word||'',
+    x.language||''
+  ].map(v=>String(v).trim().toLowerCase()).join('|');
+}
+
 document.getElementById('importFile').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f) return;
+  const f=e.target.files[0];
+  if(!f) return;
+
   try {
     const data=JSON.parse(await f.text());
-    const entries=Array.isArray(data)?data:data.entries;
-    if(!Array.isArray(entries)) throw new Error('Invalid data');
-    if(!confirm(`Import ${entries.length} entries? Current data will be replaced.`)) return;
-    await clearAll();
+    const entries=Array.isArray(data) ? data : data.entries;
+    if(!Array.isArray(entries)) throw new Error('No entries array was found in this JSON.');
+
+    const mode=document.getElementById('importMode').value;
+    if(mode==='replace') {
+      if(!confirm(`REPLACE all current data with ${entries.length} imported entries?`)) return;
+      await clearAll();
+    } else {
+      if(!confirm(`ADD ${entries.length} imported entries to the current Master JSON data?`)) return;
+    }
+
+    const existing=mode==='add' ? await getAll() : [];
+    const fingerprints=new Set(existing.map(entryFingerprint));
+    let added=0;
+    let skipped=0;
+
     for(const raw of entries) {
       const x={...raw};
       delete x.id;
+
+      const fp=entryFingerprint(x);
+      if(mode==='add' && fingerprints.has(fp)) {
+        skipped++;
+        continue;
+      }
+
       await addOne(x);
+      fingerprints.add(fp);
+      added++;
     }
-    resetForm(); await renderList(); showStatus('Imported');
+
+    resetForm();
+    await renderList();
+
+    if(mode==='add') {
+      showStatus(`ADDED ${added} · DUPLICATES SKIPPED ${skipped}`);
+    } else {
+      showStatus(`REPLACED · ${added} ENTRIES`);
+    }
   } catch(err) {
     alert('Import failed: '+err.message);
   } finally {
@@ -1265,6 +1488,7 @@ document.getElementById('importFile').addEventListener('change', async e=>{
 
 
 document.getElementById('addDescriptionBtn').onclick=()=>addLangRow('descriptions',{language:'',text:''});
+document.getElementById('addLinkBtn').onclick=()=>addLinkRow({type:'Instagram',url:''});
 
 
 
@@ -1309,6 +1533,51 @@ function animateFloating(ts) {
     el.style.top=s.y+'px';
   });
   floatRAF=requestAnimationFrame(animateFloating);
+}
+
+
+function normalizePublicURL(value) {
+  const raw=(value||'').trim();
+  if(!raw) return '';
+  if(/^https?:\/\//i.test(raw)) return raw;
+  return 'https://' + raw;
+}
+
+function qrImageURL(url) {
+  return 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=12&data=' + encodeURIComponent(url);
+}
+
+function renderArtistLinks(item) {
+  const box=document.getElementById('detailLinks');
+  box.innerHTML='';
+  const links=Array.isArray(item.links) ? item.links.filter(x=>x && x.url) : [];
+  links.forEach(link=>{
+    const url=normalizePublicURL(link.url);
+    const card=document.createElement('div');
+    card.className='detailLinkCard';
+
+    const label=document.createElement('div');
+    label.className='detailLinkLabel';
+    label.textContent=link.type || 'LINK';
+
+    const a=document.createElement('a');
+    a.href=url;
+    a.target='_blank';
+    a.rel='noopener';
+
+    const qr=document.createElement('img');
+    qr.className='detailQR';
+    qr.src=qrImageURL(url);
+    qr.alt=(link.type||'Link')+' QR code';
+
+    const txt=document.createElement('div');
+    txt.className='detailLinkText';
+    txt.textContent=url;
+
+    a.appendChild(qr);
+    card.append(label,a,txt);
+    box.appendChild(card);
+  });
 }
 
 function openArtistDetail(item) {
@@ -1376,6 +1645,8 @@ function openArtistDetail(item) {
     renderDescription(0);
   }
 
+  renderArtistLinks(item);
+
   const audio=document.getElementById('detailAudio');
   const play=document.getElementById('playWord');
   audio.pause();
@@ -1428,11 +1699,15 @@ async function buildFloatingArtists(items) {
     latin.className='latin';
     latin.textContent=item.artistNameLatin||'';
 
+    const role=document.createElement('div');
+    role.className='role';
+    role.textContent=item.titleEnglish||item.titleLocal||'';
+
     const city=document.createElement('div');
     city.className='city';
     city.textContent=item.baseCity || cityFromBase(item.base||'');
 
-    el.append(img,local,latin,city);
+    el.append(img,local,latin,role,city);
     el.addEventListener('click',()=>openArtistDetail(item));
     box.appendChild(el);
 
@@ -1464,6 +1739,7 @@ async function buildFloatingArtists(items) {
 }
 
 async function enterExhibition() {
+  try { if(!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen({navigationUI:'hide'}); } catch(e) {}
   const ex=document.getElementById('exhibition');
   const splash=document.getElementById('splash');
   const top=document.getElementById('exhibitionTop');
@@ -1524,14 +1800,38 @@ window.addEventListener('resize', async ()=>{
 
 let holdTimer=null;
 const hotspot=document.getElementById('adminHotspot');
-const startHold=()=>{ holdTimer=setTimeout(()=>{
+async function returnToAdmin() {
+  stopFloating();
+  const detailAudio=document.getElementById('detailAudio');
+  if(detailAudio) detailAudio.pause();
+  document.getElementById('artistDetail').style.display='none';
+  document.getElementById('exhibition').style.display='none';
+  try {
+    if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+    else if(document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+  } catch(e) {}
+}
+
+const startHold=()=>{ holdTimer=setTimeout(async()=>{
   const pin=prompt('ADMIN PIN');
-  if(pin==='2580') document.getElementById('exhibition').style.display='none';
+  if(pin==='1234') await returnToAdmin();
 },5000); };
 const cancelHold=()=>{ if(holdTimer) clearTimeout(holdTimer); holdTimer=null; };
 hotspot.addEventListener('pointerdown',startHold);
 hotspot.addEventListener('pointerup',cancelHold);
 hotspot.addEventListener('pointerleave',cancelHold);
+
+let adminKeyBuffer='';
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('exhibition').style.display!=='block') return;
+  if(e.key && e.key.length===1){
+    adminKeyBuffer=(adminKeyBuffer+e.key.toLowerCase()).slice(-4);
+    if(adminKeyBuffer==='zaza'){
+      adminKeyBuffer='';
+      returnToAdmin();
+    }
+  }
+});
 
 (async()=>{
   try {
