@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Future Dictionary v10.4 — Admin</title>
+<title>Future Dictionary v10.5 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -463,6 +463,42 @@ to { transform:translate(12px,9px); } }
     padding-top:0;
     border-top:0;
   }
+
+  .futureWordSection {
+    background:rgba(255,255,255,.58);
+    border:2px solid #111;
+    padding:20px;
+    margin-top:18px;
+    margin-bottom:10px;
+  }
+  .futureWordHeading {
+    font-size:20px;
+    line-height:1.1;
+    font-weight:700;
+    letter-spacing:.02em;
+    margin-bottom:10px;
+  }
+  .futureWordIntro { margin-bottom:16px; }
+  .futureWordGrid {
+    display:grid;
+    grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);
+    gap:14px;
+  }
+  .futureWordGrid label {
+    display:block;
+    margin-bottom:6px;
+  }
+  .futureWordGrid input {
+    width:100%;
+    background:#fff;
+  }
+  .futureWordInput {
+    font-size:22px !important;
+    min-height:52px;
+  }
+  @media(max-width:700px) {
+    .futureWordGrid { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -559,30 +595,26 @@ to { transform:translate(12px,9px); } }
             <input id="baseCountry" placeholder="Thailand / Japan / Cambodia / Hong Kong / Korea">
           </div>
 
-          <div class="field">
-            <label for="language">Language of the Word</label>
-            <div class="helper6">
-              <span class="helper-en">EN: Enter the language in which this word is used.</span>
-              <span class="helper-sub">中文：请输入这个词所使用的语言。</span>
-              <span class="helper-sub">日本語：この言葉が使われている言語を入力してください。</span>
-              <span class="helper-sub">ไทย: กรอกภาษาที่ใช้คำนี้</span>
-              <span class="helper-sub">Tiếng Việt: Nhập ngôn ngữ mà từ này được sử dụng.</span>
-              <span class="helper-sub">한국어: 이 단어가 사용되는 언어를 입력하세요.</span>
+          <div class="field full futureWordSection">
+            <div class="futureWordHeading">WORD FOR FUTURE DICTIONARY</div>
+            <div class="helper6 futureWordIntro">
+              <span class="helper-en">EN: Enter the word you want to contribute to Future Dictionary.</span>
+              <span class="helper-sub">中文：请输入你想收录到 Future Dictionary 中的词语。</span>
+              <span class="helper-sub">日本語：Future Dictionaryに登録したい言葉を入力してください。</span>
+              <span class="helper-sub">ไทย: กรอกคำที่คุณต้องการเพิ่มลงใน Future Dictionary</span>
+              <span class="helper-sub">Tiếng Việt: Nhập từ bạn muốn đóng góp vào Future Dictionary.</span>
+              <span class="helper-sub">한국어: Future Dictionary에 등록하고 싶은 단어를 입력하세요.</span>
             </div>
-            <input id="language" required placeholder="ไทย / 日本語 / 中文 / 한국어 / Tiếng Việt / English">
-          </div>
-
-          <div class="field">
-            <label for="word">Original Word</label>
-            <div class="helper6">
-              <span class="helper-en">EN: Enter the word in its original writing.</span>
-              <span class="helper-sub">中文：请输入这个词的原文写法。</span>
-              <span class="helper-sub">日本語：言葉を元の言語の表記で入力してください。</span>
-              <span class="helper-sub">ไทย: กรอกคำด้วยรูปแบบการเขียนในภาษาต้นฉบับ</span>
-              <span class="helper-sub">Tiếng Việt: Nhập từ theo cách viết trong ngôn ngữ gốc.</span>
-              <span class="helper-sub">한국어: 단어를 원래 언어의 표기로 입력하세요.</span>
+            <div class="futureWordGrid">
+              <div>
+                <label for="language">Language</label>
+                <input id="language" placeholder="ไทย / 日本語 / 中文 / 한국어 / Tiếng Việt / English">
+              </div>
+              <div>
+                <label for="word">Word</label>
+                <input id="word" class="futureWordInput" placeholder="言葉 / คำ / 詞 / 말 / từ / word">
+              </div>
             </div>
-            <input id="word" required placeholder="言葉 / คำ / 詞 / 말 / từ">
           </div>
 
           <div class="field">
@@ -869,7 +901,7 @@ function collectLinks() {
     .filter(x=>x.url);
 }
 
-function makeLangRow(containerId, item={language:'',text:''}) {
+function makeLangRow(containerId, item={language:'',text:''}, removable=true) {
   const row=document.createElement('div');
   row.className='langrow';
 
@@ -878,14 +910,19 @@ function makeLangRow(containerId, item={language:'',text:''}) {
 
   const lang=document.createElement('input');
   lang.className='langName';
-  lang.placeholder='English / 中文 / 日本語 / ไทย / Tiếng Việt / 한국어';
+  lang.placeholder='English / 日本語 / 中文 / ไทย / Tiếng Việt / 한국어';
   lang.value=item.language||'';
 
-  const remove=document.createElement('button');
-  remove.type='button';
-  remove.className='langRemove';
-  remove.textContent='REMOVE';
-  remove.onclick=()=>row.remove();
+  top.appendChild(lang);
+
+  if(removable) {
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.className='langRemove';
+    remove.textContent='REMOVE';
+    remove.onclick=()=>row.remove();
+    top.appendChild(remove);
+  }
 
   const isDescription = containerId==='descriptions';
   const textEl=document.createElement(isDescription?'textarea':'input');
@@ -893,20 +930,20 @@ function makeLangRow(containerId, item={language:'',text:''}) {
   textEl.placeholder=isDescription ? 'Description / commentary' : '';
   textEl.value=item.text||'';
 
-  top.append(lang,remove);
   row.append(top,textEl);
   return row;
 }
 
-function addLangRow(containerId, item) {
-  document.getElementById(containerId).appendChild(makeLangRow(containerId,item));
-}
-
 function setLangRows(containerId, items=[]) {
   const box=document.getElementById(containerId);
-  if(!box) return;
   box.innerHTML='';
-  items.forEach(item=>addLangRow(containerId,item));
+  const rows=(items && items.length) ? items : [{language:'',text:''}];
+  rows.forEach((item,index)=>box.appendChild(makeLangRow(containerId,item,index!==0)));
+}
+
+function addLangRow(containerId, item={language:'',text:''}) {
+  const box=document.getElementById(containerId);
+  box.appendChild(makeLangRow(containerId,item,true));
 }
 
 function collectLangRows(containerId, kind) {
@@ -976,11 +1013,7 @@ function resetForm() {
   document.getElementById('recordId').value='';
   document.getElementById('deleteBtn').style.display='none';
   currentThumb=null; currentAudio=null;
-  setLangRows('descriptions', [
-    {language:'English', text:''},
-    {language:'Japanese', text:''},
-    {language:'Chinese', text:''}
-  ]);
+  setLangRows('descriptions', [{language:'', text:''}]);
   document.getElementById('thumbPreview').style.display='none';
   document.getElementById('thumbPreview').src='';
   document.getElementById('thumbEmpty').style.display='';
