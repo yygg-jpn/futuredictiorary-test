@@ -430,6 +430,13 @@ to { transform:translate(12px,9px); } }
     font:inherit;
     cursor:pointer;
   }
+
+  .micDevicePanel{margin:0 0 14px;padding:10px;border:1px solid var(--line);background:rgba(255,255,255,.22)}
+  .micDeviceLabel{font-size:10px;font-weight:700;letter-spacing:.06em;margin-bottom:7px}
+  .micDeviceControls{display:flex;gap:8px;align-items:stretch}
+  .micDeviceControls select{flex:1;min-width:0;background:#fff}
+  .micDiagnostics{font-size:10px;line-height:1.45;margin-top:8px;opacity:.68;overflow-wrap:anywhere}
+  @media(max-width:650px){.micDeviceControls{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -578,6 +585,14 @@ to { transform:translate(12px,9px); } }
             </div>
 
             <div class="recordBox">
+              <div class="micDevicePanel">
+                <div class="micDeviceLabel">MICROPHONE</div>
+                <div class="micDeviceControls">
+                  <select id="micDeviceSelect"><option value="">Default microphone</option></select>
+                  <button class="btn ghost" type="button" id="refreshMicBtn">REFRESH</button>
+                </div>
+                <div class="micDiagnostics" id="micDiagnostics">DEVICE: not checked · TRACK: — · ENABLED: — · MUTED: —</div>
+              </div>
               <button class="btn primary" type="button" id="recordBtn">● RECORD</button>
               <button class="btn ghost" type="button" id="stopRecordBtn" style="display:none;">■ STOP</button>
               <button class="btn ghost" type="button" id="useRecordingBtn" style="display:none;">USE THIS RECORDING</button>
@@ -830,6 +845,63 @@ function formatTime(ms) {
   return `${m}:${s}`;
 }
 
+
+async function refreshMicrophones(requestPermission=false) {
+  const select=document.getElementById('micDeviceSelect');
+  const diag=document.getElementById('micDiagnostics');
+  const previous=select ? select.value : '';
+
+  try {
+    if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      diag.textContent='Microphone device listing is not supported by this browser.';
+      return;
+    }
+
+    // Labels are often hidden until permission has been granted.
+    if(requestPermission) {
+      const probe=await navigator.mediaDevices.getUserMedia({audio:true});
+      probe.getTracks().forEach(t=>t.stop());
+    }
+
+    const devices=await navigator.mediaDevices.enumerateDevices();
+    const mics=devices.filter(d=>d.kind==='audioinput');
+
+    select.innerHTML='';
+    const def=document.createElement('option');
+    def.value='';
+    def.textContent='Default microphone';
+    select.appendChild(def);
+
+    mics.forEach((d,i)=>{
+      const o=document.createElement('option');
+      o.value=d.deviceId;
+      o.textContent=d.label || `Microphone ${i+1}`;
+      select.appendChild(o);
+    });
+
+    if(previous && [...select.options].some(o=>o.value===previous)) select.value=previous;
+    diag.textContent=`FOUND: ${mics.length} microphone input${mics.length===1?'':'s'} · Select one, then RECORD.`;
+  } catch(err) {
+    diag.textContent='MIC ERROR: '+(err.message||err.name||'unknown error');
+  }
+}
+
+function updateMicDiagnostics(track) {
+  const diag=document.getElementById('micDiagnostics');
+  if(!diag || !track) return;
+  const settings=track.getSettings ? track.getSettings() : {};
+  const selected=document.getElementById('micDeviceSelect');
+  const selectedName=selected && selected.selectedOptions[0] ? selected.selectedOptions[0].textContent : '';
+  diag.textContent=[
+    'DEVICE: '+(track.label || selectedName || 'unknown'),
+    'TRACK: '+track.readyState,
+    'ENABLED: '+track.enabled,
+    'MUTED: '+track.muted,
+    settings.sampleRate ? 'RATE: '+settings.sampleRate+' Hz' : '',
+    settings.channelCount ? 'CHANNELS: '+settings.channelCount : ''
+  ].filter(Boolean).join(' · ');
+}
+
 function supportedRecordingMimeType() {
   if(typeof MediaRecorder==='undefined') return '';
   const ua=navigator.userAgent || '';
@@ -975,13 +1047,16 @@ async function startRecording() {
 
   try {
     document.getElementById('recordStatus').textContent='Requesting microphone…';
-    mediaStream = await navigator.mediaDevices.getUserMedia({
-      audio:{
-        echoCancellation:false,
-        noiseSuppression:false,
-        autoGainControl:true
-      }
-    });
+    const micSelect=document.getElementById('micDeviceSelect');
+    const selectedDeviceId=micSelect ? micSelect.value : '';
+    const audioConstraints={
+      echoCancellation:false,
+      noiseSuppression:false,
+      autoGainControl:true
+    };
+    if(selectedDeviceId) audioConstraints.deviceId={exact:selectedDeviceId};
+
+    mediaStream = await navigator.mediaDevices.getUserMedia({audio:audioConstraints});
 
     startMicMeter(mediaStream);
 
@@ -990,6 +1065,10 @@ async function startRecording() {
       throw new Error('No audio input track was provided by the browser.');
     }
     const t=tracks[0];
+    updateMicDiagnostics(t);
+    t.addEventListener('mute',()=>updateMicDiagnostics(t));
+    t.addEventListener('unmute',()=>updateMicDiagnostics(t));
+    t.addEventListener('ended',()=>updateMicDiagnostics(t));
     document.getElementById('recordStatus').textContent=
       `Microphone ready: ${t.label || 'audio input'} · Speak now to check MIC INPUT`;
 
@@ -1762,6 +1841,16 @@ async function enterExhibition() {
   },1200);
 }
 
+
+document.getElementById('refreshMicBtn').onclick=()=>refreshMicrophones(true);
+document.getElementById('micDeviceSelect').addEventListener('change',()=>{
+  const s=document.getElementById('micDeviceSelect');
+  document.getElementById('micDiagnostics').textContent='SELECTED: '+(s.selectedOptions[0]?.textContent||'Default microphone')+' · Press RECORD to test.';
+});
+if(navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+  navigator.mediaDevices.addEventListener('devicechange',()=>refreshMicrophones(false));
+}
+refreshMicrophones(false);
 
 document.getElementById('recordBtn').onclick=startRecording;
 document.getElementById('stopRecordBtn').onclick=stopRecording;
