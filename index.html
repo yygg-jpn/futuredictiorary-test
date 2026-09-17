@@ -763,7 +763,7 @@ to { transform:translate(12px,9px); } }
   .aboutImageItem img{width:100%;height:auto;display:block;background:#bbb}
   .aboutImageCaption{font-size:11px;line-height:1.35;margin-top:7px}
   .aboutImageCredit{font-size:10px;line-height:1.35;margin-top:3px;opacity:.65}
-  .exhibitionCredit{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:2147483000;text-align:center;font-size:9px;line-height:1.45;opacity:.42;pointer-events:none;white-space:nowrap}
+  .exhibitionCredit{position:fixed;left:14px;bottom:10px;transform:none;z-index:2147483000;text-align:left;font-size:9px;line-height:1.45;opacity:.42;pointer-events:none;white-space:nowrap}
   #relationLaserLayer{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
   .relationLaser{position:absolute;height:1px;background:rgba(255,255,255,.62);transform-origin:0 50%;width:0;opacity:0;box-shadow:0 0 3px rgba(255,255,255,.28)}
 
@@ -786,8 +786,16 @@ to { transform:translate(12px,9px); } }
   #borderDrawPath{fill:none;stroke:rgba(38,38,38,.42);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;opacity:0}
   #floatingArtists{z-index:2}
   #relationLaserLayer{z-index:3}
-  #artistDetail{will-change:transform,border-radius,opacity;transform:translateZ(0);transform-origin:0 0;overflow:auto}
+  #artistDetail{will-change:transform,border-radius,opacity;transform:translateZ(0);transform-origin:0 0;overflow:hidden !important}
+  #artistDetail .detailInner{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:58px;box-sizing:border-box}
   #detailBack{min-width:178px}
+  /* v11.14 — exhibition viewport lock: never let hidden admin/document create a second scrollbar */
+  html.exhibitionLocked,body.exhibitionLocked{overflow:hidden !important;height:100% !important;max-height:100% !important;overscroll-behavior:none}
+  body.exhibitionLocked{position:fixed !important;inset:0 !important;width:100% !important}
+  #exhibition,#startPage,#splash,#aboutPage,#exhibitionTop,#artistDetail{max-width:100vw;max-height:100%;box-sizing:border-box}
+  #exhibitionTop{overflow:hidden !important}
+  #startPage{overflow:hidden !important}
+  #borderDrawLayer,#relationLaserLayer,#floatingArtists{contain:layout paint}
 
 </style>
 </head>
@@ -1006,11 +1014,11 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.14</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.14</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -2537,7 +2545,7 @@ document.getElementById('detailBack').onclick=async()=>{
   const audio=document.getElementById('detailAudio'); audio.pause();
   const detail=document.getElementById('artistDetail');
   await animateDetailClose(detailTransitionOrigin);
-  detail.style.display='none'; detail.style.transform=''; detail.style.borderRadius=''; detail.style.overflow='auto';
+  detail.style.display='none'; detail.style.transform=''; detail.style.borderRadius=''; detail.style.overflow='hidden';
   resumeFloating(); startBorderDrawing(); resetIdleTimer();
 };
 
@@ -2696,6 +2704,7 @@ async function enterExhibition() {
     if(!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen({navigationUI:'hide'});
     else if(!document.webkitFullscreenElement && document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
   } catch(e) { console.warn('Fullscreen API unavailable on this browser; continuing in viewport exhibition mode.', e); }
+  document.documentElement.classList.add('exhibitionLocked'); document.body.classList.add('exhibitionLocked');
   const ex=document.getElementById('exhibition'); ex.style.display='block'; exhibitionItems=(await getAll()).filter(x=>x.visible!==false); showStartPage();
 }
 
@@ -2732,6 +2741,7 @@ async function returnToAdmin() {
   document.getElementById('startPage').style.display='none';
   document.getElementById('aboutPage').style.display='none';
   document.getElementById('exhibition').style.display='none';
+  document.documentElement.classList.remove('exhibitionLocked'); document.body.classList.remove('exhibitionLocked');
   try {
     if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
     else if(document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
