@@ -797,6 +797,86 @@ to { transform:translate(12px,9px); } }
   #startPage{overflow:hidden !important}
   #borderDrawLayer,#relationLaserLayer,#floatingArtists{contain:layout paint}
 
+
+
+  /* v11.15 — definitive exhibition viewport / scroll architecture */
+  html.exhibitionLocked,
+  html.exhibitionLocked body{
+    position:fixed !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    overscroll-behavior:none !important;
+  }
+  body.exhibitionLocked > .wrap{height:100% !important;max-height:100% !important;overflow:hidden !important;}
+  #exhibition{
+    position:fixed !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    max-width:none !important;
+    max-height:none !important;
+    overflow:hidden !important;
+    overscroll-behavior:none !important;
+  }
+  #startPage,#splash,#aboutPage,#exhibitionTop{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    max-height:none !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+  }
+  #artistDetail{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    overscroll-behavior:none !important;
+    box-sizing:border-box !important;
+  }
+  #artistDetail .detailInner{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 0 72px !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch;
+    box-sizing:border-box !important;
+  }
+  #artistDetail .detailCard{margin:0 auto !important;box-sizing:border-box !important;}
+  .exhibitionCredit{
+    position:fixed !important;
+    left:14px !important;
+    right:auto !important;
+    bottom:10px !important;
+    top:auto !important;
+    transform:none !important;
+    margin:0 !important;
+    text-align:left !important;
+    z-index:2147483000 !important;
+  }
+  /* Admin footer stays in admin only; never let it leak into exhibition layout. */
+  body.exhibitionLocked .footerCredit{display:none !important;}
+
 </style>
 </head>
 <body>
@@ -1014,11 +1094,11 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.14</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.15</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.14</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.15</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -2476,7 +2556,7 @@ function animateDetailOpen(origin){
     {transform:from,borderRadius:origin.kind==='artist'?'50%':'0',opacity:1},
     {transform:'translate(0,0) scale(1,1)',borderRadius:'0',opacity:1}
   ],{duration:720,easing:'cubic-bezier(.18,.82,.16,1)',fill:'forwards'});
-  anim.onfinish=()=>{d.style.transform='none';d.style.borderRadius='0';d.style.overflow='auto';};
+  anim.onfinish=()=>{d.style.transform='none';d.style.borderRadius='0';d.style.overflow='hidden';};
   return anim.finished.catch(()=>{});
 }
 function animateDetailClose(origin){
