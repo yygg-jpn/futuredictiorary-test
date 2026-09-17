@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Future Dictionary v11.11 — Admin</title>
+<meta name="theme-color" content="#CFCFCF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Future Dictionary v11.16 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -1094,11 +1101,11 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.15</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.16</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.15</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.16</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -2780,10 +2787,7 @@ document.getElementById('enterDictionaryBtn').onclick=showDictionaryTop;
 
 async function enterExhibition() {
   armExhibitionHistoryGuard();
-  try {
-    if(!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen({navigationUI:'hide'});
-    else if(!document.webkitFullscreenElement && document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
-  } catch(e) { console.warn('Fullscreen API unavailable on this browser; continuing in viewport exhibition mode.', e); }
+  // PWA mode: no Fullscreen API. Installed app controls the display surface.
   document.documentElement.classList.add('exhibitionLocked'); document.body.classList.add('exhibitionLocked');
   const ex=document.getElementById('exhibition'); ex.style.display='block'; exhibitionItems=(await getAll()).filter(x=>x.visible!==false); showStartPage();
 }
@@ -2822,10 +2826,6 @@ async function returnToAdmin() {
   document.getElementById('aboutPage').style.display='none';
   document.getElementById('exhibition').style.display='none';
   document.documentElement.classList.remove('exhibitionLocked'); document.body.classList.remove('exhibitionLocked');
-  try {
-    if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
-    else if(document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
-  } catch(e) {}
 
   if(exhibitionHistoryArmed) {
     exhibitionHistoryArmed=false;
@@ -2912,5 +2912,11 @@ addLanguageShuffleNotes();
 })();
 </script>
 
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.warn));
+}
+</script>
 </body>
 </html>
