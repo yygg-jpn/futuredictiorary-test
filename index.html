@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Future Dictionary v11.16 — Admin</title>
+<title>Future Dictionary v11.17 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -200,6 +200,7 @@
   }
   .detailLocal { font-size:30px; font-weight:700; margin-top:18px; }
   .detailLatin { font-size:18px; margin-top:7px; }
+  .detailRole { font-size:14px; margin-top:8px; }
   .detailBase { font-size:13px; opacity:.58; margin-top:5px; text-transform:uppercase; letter-spacing:.05em; }
   .detailWord { font-size:clamp(46px,9vw,96px); line-height:1.05; margin:54px 0 12px; word-break:break-word; }
   .detailGuide { font-size:16px; opacity:.6; margin-bottom:24px; }
@@ -390,9 +391,14 @@ to { transform:translate(12px,9px); } }
     gap:28px;
   }
   .detailLinkCard {
-    width:138px;
+    width:160px;
     text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
   }
+  .detailLinkHeader,.detailQRWrap { width:100%; display:flex; align-items:center; justify-content:center; }
+  .detailLinkHeader { gap:5px; margin-bottom:10px; }
   .detailLinkLabel {
     font-size:11px;
     letter-spacing:.06em;
@@ -1101,11 +1107,11 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.16</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.17</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.16</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.17</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -1139,6 +1145,7 @@ to { transform:translate(12px,9px); } }
         <img id="detailThumb" class="detailThumb" alt="">
         <div id="detailLocal" class="detailLocal"></div>
         <div id="detailLatin" class="detailLatin"></div>
+        <div id="detailRole" class="detailRole"></div>
         <div id="detailBase" class="detailBase"></div>
         <div id="detailProfile" class="detailProfile"></div>
         <div id="detailWordTabs" class="detailWordTabs"></div>
@@ -2425,12 +2432,8 @@ function renderArtistLinks(item) {
     qr.src=link.qrData || qrImageURL(url);
     qr.alt=(link.type||'Link')+' QR code';
 
-    const txt=document.createElement('div');
-    txt.className='detailLinkText';
-    txt.textContent=url;
-
     a.appendChild(qr);
-    card.append(header,a,txt);
+    card.append(header,a);
     box.appendChild(card);
   });
 }
@@ -2596,6 +2599,7 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
   const detail=document.getElementById('artistDetail');
   document.getElementById('detailLocal').textContent=item.artistNameLocal||item.artistName||'';
   document.getElementById('detailLatin').textContent=item.artistNameLatin||'';
+  document.getElementById('detailRole').textContent=item.titleEnglish||item.titleLocal||'';
   document.getElementById('detailBase').textContent=[item.baseCity,item.baseCountry].filter(Boolean).join(' / ') || item.base || '';
   const img=document.getElementById('detailThumb');
   const photo=item.profilePhotoData||item.thumbnailData;
