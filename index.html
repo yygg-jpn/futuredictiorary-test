@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Future Dictionary v11.17 — Admin</title>
+<title>Future Dictionary v11.18 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -890,6 +890,14 @@ to { transform:translate(12px,9px); } }
   /* Admin footer stays in admin only; never let it leak into exhibition layout. */
   body.exhibitionLocked .footerCredit{display:none !important;}
 
+
+  /* v11.18: ABOUT can always reveal the entire text on iPad. */
+  #aboutPage.aboutPage{overflow:hidden !important;}
+  #aboutPage .aboutPageInner{height:100% !important;min-height:0 !important;overflow-y:auto !important;overflow-x:hidden !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:75px !important;display:block !important;}
+  #aboutPage .aboutImageGrid{max-height:none !important;flex-basis:auto !important;}
+  #aboutPage .aboutText{overflow:visible !important;max-height:none !important;}
+  #adminHotspot{position:fixed !important;right:0 !important;bottom:0 !important;width:100px !important;height:100px !important;z-index:2147483647 !important;touch-action:none !important;pointer-events:auto !important;}
+
 </style>
 </head>
 <body>
@@ -1107,11 +1115,12 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.17</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.18</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
+  <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.17</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.18</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -1136,7 +1145,6 @@ to { transform:translate(12px,9px); } }
   <div id="exhibitionTop" style="position:absolute;inset:0;display:none;">
     <div id="borderDrawLayer"><svg id="borderDrawSvg" preserveAspectRatio="none"><path id="borderDrawPath"></path></svg></div>
     <div id="floatingArtists" style="position:absolute;inset:0;"></div>
-    <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   </div>
   <div id="artistDetail">
     <button id="detailBack" type="button">← BACK TO THE DICTIONARY</button>
@@ -2585,15 +2593,19 @@ function resumeFloating(){
   stopFloating();startRelationCycle();floatLast=null;floatRAF=requestAnimationFrame(animateFloating);
 }
 function fitAboutToViewport(){
-  const page=document.getElementById('aboutPage'),grid=document.getElementById('aboutExhibitionImages');if(!page||page.style.display!=='block')return;
+  const page=document.getElementById('aboutPage'),grid=document.getElementById('aboutExhibitionImages');
+  if(!page||page.style.display!=='block'||!grid)return;
   const inner=page.querySelector('.aboutPageInner');if(!inner)return;
-  grid.style.maxHeight='42vh';grid.style.flexBasis='42vh';
-  [...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='34vh');
+  grid.style.maxHeight='32vh';grid.style.flexBasis='auto';
+  [...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='25vh');
   requestAnimationFrame(()=>{
-    if(inner.scrollHeight>inner.clientHeight){grid.style.maxHeight='30vh';grid.style.flexBasis='30vh';[...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='24vh');}
-    requestAnimationFrame(()=>{if(inner.scrollHeight>inner.clientHeight){grid.style.maxHeight='22vh';grid.style.flexBasis='22vh';[...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='17vh');}});
+    if(inner.scrollHeight>inner.clientHeight){
+      grid.style.maxHeight='23vh';
+      [...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='17vh');
+    }
   });
 }
+
 function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='artist') {
   detailTransitionOrigin = captureTransitionOrigin(originEl,originKind);
   const detail=document.getElementById('artistDetail');
@@ -2838,33 +2850,38 @@ async function returnToAdmin() {
   setTimeout(()=>{ exhibitionAuthorizedExit=false; },100);
 }
 
+let holdTriggered=false;
 const startHold=(e)=>{
-  if(document.getElementById('exhibition').style.display!=='block') return;
-  if(e && e.cancelable) e.preventDefault();
-  if(holdActive) return;
-  holdActive=true;
-  if(holdTimer) clearTimeout(holdTimer);
-  holdTimer=setTimeout(async()=>{
-    holdTimer=null;
-    holdActive=false;
-    const pin=prompt('ADMIN PIN');
-    if(pin==='1234') await returnToAdmin();
+  if(document.getElementById('exhibition').style.display!=='block')return;
+  if(e && e.cancelable)e.preventDefault();
+  if(holdActive)return;
+  holdActive=true;holdTriggered=false;
+  clearTimeout(holdTimer);
+  holdTimer=setTimeout(()=>{
+    holdTimer=null;holdActive=false;holdTriggered=true;
+    // Let iPad finish its touch gesture before opening a native dialog.
+    setTimeout(async()=>{
+      const pin=prompt('ADMIN PIN');
+      if(pin==='1234')await returnToAdmin();
+    },80);
   },5000);
 };
 const cancelHold=(e)=>{
-  if(e && e.cancelable) e.preventDefault();
-  if(holdTimer) clearTimeout(holdTimer);
-  holdTimer=null;
-  holdActive=false;
+  if(e && e.cancelable)e.preventDefault();
+  clearTimeout(holdTimer);holdTimer=null;holdActive=false;
 };
 if(hotspot){
-  // One exhibition-wide hotspot. Do not cancel merely because the finger drifts a few pixels.
-  hotspot.addEventListener('pointerdown',startHold,{passive:false});
-  hotspot.addEventListener('pointerup',cancelHold,{passive:false});
-  hotspot.addEventListener('pointercancel',cancelHold,{passive:false});
-  hotspot.addEventListener('touchstart',startHold,{passive:false});
-  hotspot.addEventListener('touchend',cancelHold,{passive:false});
-  hotspot.addEventListener('touchcancel',cancelHold,{passive:false});
+  // iPad Safari supports touch events; avoid pointercancel ending the timer prematurely.
+  const touchCapable=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+  if(touchCapable){
+    hotspot.addEventListener('touchstart',startHold,{passive:false});
+    hotspot.addEventListener('touchend',cancelHold,{passive:false});
+    hotspot.addEventListener('touchcancel',cancelHold,{passive:false});
+  }else{
+    hotspot.addEventListener('pointerdown',startHold,{passive:false});
+    hotspot.addEventListener('pointerup',cancelHold,{passive:false});
+    hotspot.addEventListener('pointercancel',cancelHold,{passive:false});
+  }
   hotspot.addEventListener('contextmenu',e=>e.preventDefault());
 }
 
