@@ -1,4 +1,4 @@
-const CACHE = 'future-dictionary-v11-18';
+const CACHE = 'future-dictionary-v11-19';
 const CORE = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
