@@ -878,6 +878,17 @@ to { transform:translate(12px,9px); } }
   #artistDetail .detailCard{margin:0 auto !important;box-sizing:border-box !important;padding-top:80px !important;}
   /* v11.20: long detail pages must always start at the true top on iPad/Safari. */
   #artistDetail .detailInner{align-items:flex-start !important;justify-content:flex-start !important;}
+  /* v11.21 — Entry pages are true top-to-bottom documents. */
+  #artistDetail .detailCard{display:block !important;text-align:center !important;}
+  #artistDetail .detailEntrySection{display:block;width:100%;}
+  #artistDetail .detailEntrySection .detailWord{margin-top:12px !important;}
+  #artistDetail .detailContributorLabel{display:none;margin:76px auto 26px;padding-top:28px;border-top:1px solid rgba(0,0,0,.55);width:min(760px,92vw);font-size:14px;font-weight:700;letter-spacing:.06em;text-align:left;}
+  #artistDetail.wordMode .detailCard{padding-top:92px !important;}
+  #artistDetail.wordMode .detailWordTabs{margin-top:0 !important;}
+  #artistDetail.wordMode .detailIdentity{margin-top:24px;}
+  #artistDetail.wordMode .detailProfile{margin-top:30px;}
+  #artistDetail.wordMode .detailLinks{margin-top:34px;}
+
   .exhibitionCredit{
     position:fixed !important;
     left:14px !important;
@@ -1127,12 +1138,12 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.20</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.21</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.20</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.21</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -1162,12 +1173,15 @@ to { transform:translate(12px,9px); } }
     <button id="detailBack" type="button">← BACK TO THE DICTIONARY</button>
     <div class="detailInner">
       <div class="detailCard">
-        <img id="detailThumb" class="detailThumb" alt="">
-        <div id="detailLocal" class="detailLocal"></div>
-        <div id="detailLatin" class="detailLatin"></div>
-        <div id="detailRole" class="detailRole"></div>
-        <div id="detailBase" class="detailBase"></div>
+        <div id="detailIdentity" class="detailIdentity">
+          <img id="detailThumb" class="detailThumb" alt="">
+          <div id="detailLocal" class="detailLocal"></div>
+          <div id="detailLatin" class="detailLatin"></div>
+          <div id="detailRole" class="detailRole"></div>
+          <div id="detailBase" class="detailBase"></div>
+        </div>
         <div id="detailProfile" class="detailProfile"></div>
+        <div id="detailEntrySection" class="detailEntrySection">
         <div id="detailWordTabs" class="detailWordTabs"></div>
         <div id="detailWord" class="detailWord"></div>
         <div id="detailGuide" class="detailGuide"></div>
@@ -1176,6 +1190,8 @@ to { transform:translate(12px,9px); } }
 
         <div id="detailDescriptions" class="detailDescriptions"></div>
         <div id="detailImages" class="detailImages"></div>
+        </div>
+        <div id="detailContributorLabel" class="detailContributorLabel">ARTIST / CONTRIBUTOR</div>
         <div id="detailLinks" class="detailLinks"></div>
       </div>
     </div>
@@ -2670,6 +2686,7 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
   detailTransitionOrigin = captureTransitionOrigin(originEl,originKind);
   const detail=document.getElementById('artistDetail');
   const scroller=detail.querySelector('.detailInner');
+  const card=detail.querySelector('.detailCard');
   const profileMode=(originKind==='artist');
 
   const resetDetailScroll=()=>{
@@ -2677,6 +2694,12 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
     if(scroller){scroller.scrollTop=0;scroller.scrollLeft=0;}
     detail.scrollTop=0;
   };
+
+  const identity=document.getElementById('detailIdentity');
+  const profile=document.getElementById('detailProfile');
+  const entrySection=document.getElementById('detailEntrySection');
+  const contributorLabel=document.getElementById('detailContributorLabel');
+  const links=document.getElementById('detailLinks');
 
   document.getElementById('detailLocal').textContent=item.artistNameLocal||item.artistName||'';
   document.getElementById('detailLatin').textContent=item.artistNameLatin||'';
@@ -2689,8 +2712,6 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
   renderDetailProfiles(item);
   renderArtistLinks(item);
 
-  const profile=document.getElementById('detailProfile');
-  const links=document.getElementById('detailLinks');
   const tabs=document.getElementById('detailWordTabs');
   const wordEl=document.getElementById('detailWord');
   const guide=document.getElementById('detailGuide');
@@ -2698,10 +2719,22 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
   const descBox=document.getElementById('detailDescriptions');
   const images=document.getElementById('detailImages');
 
-  // Portrait = artist profile only. Word square = selected entry only.
-  if(profile) profile.style.display=profileMode && profile.innerHTML ? 'block' : 'none';
-  if(links) links.style.display=profileMode ? '' : 'none';
-  [tabs,wordEl,guide,play,descBox,images].forEach(el=>{if(el) el.style.display=profileMode?'none':'';});
+  // Rebuild the reading order every time. Portrait: artist first. Word: entry first, artist at the end.
+  detail.classList.toggle('wordMode',!profileMode);
+  if(profileMode){
+    contributorLabel.style.display='none';
+    entrySection.style.display='none';
+    card.append(identity,profile,links);
+    profile.style.display=profile.innerHTML ? 'block' : 'none';
+    links.style.display='';
+  }else{
+    entrySection.style.display='block';
+    contributorLabel.style.display='block';
+    card.append(entrySection,contributorLabel,identity,profile,links);
+    identity.style.display='block';
+    profile.style.display=profile.innerHTML ? 'block' : 'none';
+    links.style.display='';
+  }
 
   const words=legacyWords(item);
   tabs.innerHTML='';
@@ -2716,24 +2749,23 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
       const langTabs=document.createElement('div');langTabs.className='detailLangTabs';descBox.appendChild(langTabs);
       const content=document.createElement('div');content.className='detailDescriptionBlock';descBox.appendChild(content);
       const rd=di=>{content.innerHTML='';const text=document.createElement('div');text.className='detailDescriptionText';showRich(text,descriptions[di]);content.appendChild(text);[...langTabs.children].forEach((btn,i)=>btn.classList.toggle('active',i===di));};
-      descriptions.forEach((d,di)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailLangTab';btn.textContent=d.language||`Language ${di+1}`;btn.onclick=()=>{rd(di);resetDetailScroll();};langTabs.appendChild(btn)}); rd(0);
+      descriptions.forEach((d,di)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailLangTab';btn.textContent=d.language||`Language ${di+1}`;btn.onclick=()=>rd(di);langTabs.appendChild(btn)}); rd(0);
     }
     renderDetailImages(w);
     const audio=document.getElementById('detailAudio');audio.pause();audio.currentTime=0;
     if(w.audioData){audio.src=w.audioData;play.style.display='inline-flex';play.onclick=()=>{audio.currentTime=0;audio.play()}}else{audio.removeAttribute('src');play.style.display='none'}
     [...tabs.children].forEach((btn,i)=>btn.classList.toggle('active',i===index));
-    resetDetailScroll();
+    // Switching language/word should not throw the reader to the top; only opening a detail page does.
   };
 
   if(!profileMode){
-    if(words.length>1){ words.forEach((w,index)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailWordTab';btn.textContent=w.word||`WORD ${String(index+1).padStart(2,'0')}`;btn.onclick=()=>renderWord(index);tabs.appendChild(btn)}); }
+    if(words.length>1){ words.forEach((w,index)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailWordTab';btn.textContent=w.word||`WORD ${String(index+1).padStart(2,'0')}`;btn.onclick=()=>{renderWord(index);resetDetailScroll();};tabs.appendChild(btn)}); }
     renderWord(Math.max(0,Math.min(initialWordIndex,words.length-1)));
   } else {
     const audio=document.getElementById('detailAudio');audio.pause();audio.removeAttribute('src');
   }
 
-  // Reset BEFORE display and again after layout/transition. Safari can restore a nested
-  // overflow scroller asynchronously, so one scrollTop=0 is not enough.
+  // Make the page visible only after its DOM order is final, then force the nested iPad scroller to the true top.
   resetDetailScroll();
   detail.style.display='block'; stopFloating(); stopBorderDrawing();
   resetDetailScroll();
@@ -2742,6 +2774,7 @@ function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='arti
     resetDetailScroll();
     setTimeout(resetDetailScroll,60);
     setTimeout(resetDetailScroll,220);
+    setTimeout(resetDetailScroll,500);
   });
 }
 
