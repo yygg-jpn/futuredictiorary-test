@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Future Dictionary v11.23 — Admin</title>
+<title>Future Dictionary v11.24 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -955,7 +955,7 @@ to { transform:translate(12px,9px); } }
 .richEditor span[style*="font-size"]{line-height:1.5}
 .detailProfileText,.detailDescriptionText,.aboutText{white-space:pre-wrap;overflow-wrap:anywhere}
 
-  /* v11.23 — iPad-safe detail width + exact QR centering */
+  /* v11.24 — iPad-safe detail width + exact QR centering */
   #artistDetail .detailCard{
     width:min(780px, calc(100vw - 48px)) !important;
     max-width:calc(100vw - 48px) !important;
@@ -987,6 +987,12 @@ to { transform:translate(12px,9px); } }
     max-width:100% !important;
     overflow-wrap:anywhere !important;
     word-break:break-word !important;
+  }
+
+  /* v11.24: biography body is left-aligned for readability */
+  #artistDetail .detailProfileText,
+  #artistDetail .detailProfileText *{
+    text-align:left !important;
   }
   #artistDetail .detailLinks{
     margin-left:auto !important;
@@ -1239,12 +1245,12 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.23</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.24</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.23</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.24</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
