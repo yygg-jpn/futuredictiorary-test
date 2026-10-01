@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Future Dictionary v11.22 — Admin</title>
+<title>Future Dictionary v11.23 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -954,6 +954,74 @@ to { transform:translate(12px,9px); } }
 .richEditor:focus{outline:2px solid #000}
 .richEditor span[style*="font-size"]{line-height:1.5}
 .detailProfileText,.detailDescriptionText,.aboutText{white-space:pre-wrap;overflow-wrap:anywhere}
+
+  /* v11.23 — iPad-safe detail width + exact QR centering */
+  #artistDetail .detailCard{
+    width:min(780px, calc(100vw - 48px)) !important;
+    max-width:calc(100vw - 48px) !important;
+    padding-left:24px !important;
+    padding-right:24px !important;
+    overflow:visible !important;
+  }
+  #artistDetail .detailEntrySection,
+  #artistDetail .detailDescriptions,
+  #artistDetail .detailProfile,
+  #artistDetail .detailProfileEntries,
+  #artistDetail .detailIdentity,
+  #artistDetail .detailLinks,
+  #artistDetail .detailContributorLabel{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+  #artistDetail .detailDescriptionText,
+  #artistDetail .detailProfileText{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    overflow-wrap:anywhere !important;
+    word-break:break-word !important;
+  }
+  #artistDetail .detailDescriptionText *,
+  #artistDetail .detailProfileText *{
+    max-width:100% !important;
+    overflow-wrap:anywhere !important;
+    word-break:break-word !important;
+  }
+  #artistDetail .detailLinks{
+    margin-left:auto !important;
+    margin-right:auto !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
+  }
+  #artistDetail .detailLinkCard{
+    width:160px !important;
+    flex:0 0 160px !important;
+    margin:0 !important;
+    align-items:center !important;
+  }
+  #artistDetail .detailQRWrap{
+    width:160px !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+    margin:0 auto !important;
+  }
+  #artistDetail .detailQR{
+    width:125px !important;
+    height:125px !important;
+    display:block !important;
+    margin:0 auto !important;
+    flex:0 0 125px !important;
+  }
+  @media (max-width:700px){
+    #artistDetail .detailCard{
+      width:calc(100vw - 32px) !important;
+      max-width:calc(100vw - 32px) !important;
+      padding-left:16px !important;
+      padding-right:16px !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1171,12 +1239,12 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.22</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.23</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.22</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.23</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
