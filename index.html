@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Future Dictionary v11.16 — Admin</title>
+<title>Future Dictionary v11.20 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -182,7 +182,7 @@
   .detailInner {
     min-height:100%;
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     justify-content:center;
   }
   .detailCard {
@@ -200,6 +200,7 @@
   }
   .detailLocal { font-size:30px; font-weight:700; margin-top:18px; }
   .detailLatin { font-size:18px; margin-top:7px; }
+  .detailRole { font-size:14px; margin-top:8px; }
   .detailBase { font-size:13px; opacity:.58; margin-top:5px; text-transform:uppercase; letter-spacing:.05em; }
   .detailWord { font-size:clamp(46px,9vw,96px); line-height:1.05; margin:54px 0 12px; word-break:break-word; }
   .detailGuide { font-size:16px; opacity:.6; margin-bottom:24px; }
@@ -390,9 +391,14 @@ to { transform:translate(12px,9px); } }
     gap:28px;
   }
   .detailLinkCard {
-    width:138px;
+    width:160px;
     text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
   }
+  .detailLinkHeader,.detailQRWrap { width:100%; display:flex; align-items:center; justify-content:center; }
+  .detailLinkHeader { gap:5px; margin-bottom:10px; }
   .detailLinkLabel {
     font-size:11px;
     letter-spacing:.06em;
@@ -870,7 +876,7 @@ to { transform:translate(12px,9px); } }
     box-sizing:border-box !important;
   }
   #artistDetail .detailCard{margin:0 auto !important;box-sizing:border-box !important;padding-top:80px !important;}
-  /* v11.20 — detail pages always open from the top on iPad/Safari */
+  /* v11.20: long detail pages must always start at the true top on iPad/Safari. */
   #artistDetail .detailInner{align-items:flex-start !important;justify-content:flex-start !important;}
   .exhibitionCredit{
     position:fixed !important;
@@ -886,6 +892,24 @@ to { transform:translate(12px,9px); } }
   /* Admin footer stays in admin only; never let it leak into exhibition layout. */
   body.exhibitionLocked .footerCredit{display:none !important;}
 
+
+  /* v11.19: ABOUT can always reveal the entire text on iPad. */
+  #aboutPage.aboutPage{overflow:hidden !important;}
+  #aboutPage .aboutPageInner{height:100% !important;min-height:0 !important;overflow-y:auto !important;overflow-x:hidden !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:75px !important;display:block !important;}
+  #aboutPage .aboutImageGrid{max-height:none !important;flex-basis:auto !important;}
+  #aboutPage .aboutText{overflow:visible !important;max-height:none !important;}
+  #adminHotspot{position:fixed !important;right:0 !important;bottom:0 !important;width:100px !important;height:100px !important;z-index:2147483647 !important;touch-action:none !important;pointer-events:auto !important;}
+
+
+/* Rich text editor: formatting is stored separately from legacy plain text. */
+.richToolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 0 0}
+.richToolbar button,.richToolbar select{border:1px solid #444;background:#fff;color:#000;min-height:36px;padding:5px 12px;border-radius:0}
+.richToolbar button[aria-pressed="true"]{background:#000;color:#fff}
+.richEditor{min-height:126px;width:100%;padding:12px;border:1px solid #777;background:#fff;color:#000;overflow-wrap:anywhere;white-space:pre-wrap;outline-offset:2px}
+.richEditor:empty:before{content:attr(data-placeholder);color:#777;pointer-events:none}
+.richEditor:focus{outline:2px solid #000}
+.richEditor span[style*="font-size"]{line-height:1.5}
+.detailProfileText,.detailDescriptionText,.aboutText{white-space:pre-wrap;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -1103,11 +1127,12 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.16</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.20</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
+  <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.16</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.20</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -1132,7 +1157,6 @@ to { transform:translate(12px,9px); } }
   <div id="exhibitionTop" style="position:absolute;inset:0;display:none;">
     <div id="borderDrawLayer"><svg id="borderDrawSvg" preserveAspectRatio="none"><path id="borderDrawPath"></path></svg></div>
     <div id="floatingArtists" style="position:absolute;inset:0;"></div>
-    <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   </div>
   <div id="artistDetail">
     <button id="detailBack" type="button">← BACK TO THE DICTIONARY</button>
@@ -1141,6 +1165,7 @@ to { transform:translate(12px,9px); } }
         <img id="detailThumb" class="detailThumb" alt="">
         <div id="detailLocal" class="detailLocal"></div>
         <div id="detailLatin" class="detailLatin"></div>
+        <div id="detailRole" class="detailRole"></div>
         <div id="detailBase" class="detailBase"></div>
         <div id="detailProfile" class="detailProfile"></div>
         <div id="detailWordTabs" class="detailWordTabs"></div>
@@ -1373,6 +1398,66 @@ function collectLinks() {
     .filter(x=>x.url);
 }
 
+
+// Only explicitly supported inline formatting survives JSON import and display.
+function cleanRichHTML(html){
+  const template=document.createElement('template');template.innerHTML=String(html||'');
+  function walk(node){
+    if(node.nodeType===3)return document.createTextNode(node.nodeValue);
+    if(node.nodeType!==1)return document.createDocumentFragment();
+    const tag=node.tagName.toLowerCase();
+    const allowed=['b','strong','i','em','br','div','p','span'];
+    const el=allowed.includes(tag)?document.createElement(tag):document.createDocumentFragment();
+    if(tag==='span'){
+      const size=(node.style.fontSize||'').match(/^(12|14|16|18|24|32)px$/);
+      if(size)el.style.fontSize=size[0];
+    }
+    [...node.childNodes].forEach(child=>el.appendChild(walk(child)));
+    return el;
+  }
+  const box=document.createElement('div');[...template.content.childNodes].forEach(n=>box.appendChild(walk(n)));
+  return box.innerHTML;
+}
+function plainFromRich(el){return (el.innerText||el.textContent||'').trim();}
+function applyRich(el,record){
+  if(record&&record.html)el.innerHTML=cleanRichHTML(record.html);
+  else el.textContent=(record&&record.text)||'';
+}
+function richRowData(row){
+  const el=row.querySelector('.langText');
+  return {language:row.querySelector('.langName').value.trim(),text:plainFromRich(el),html:cleanRichHTML(el.innerHTML)};
+}
+function createRichEditor(item,placeholder){
+  const wrap=document.createElement('div');wrap.className='richWrap';
+  const toolbar=document.createElement('div');toolbar.className='richToolbar';
+  const editor=document.createElement('div');editor.className='langText richEditor';
+  editor.contentEditable='true';editor.setAttribute('role','textbox');editor.setAttribute('aria-multiline','true');editor.dataset.placeholder=placeholder;
+  applyRich(editor,item);
+  let savedRange=null;
+  const save=()=>{const sel=window.getSelection();if(sel&&sel.rangeCount&&editor.contains(sel.anchorNode))savedRange=sel.getRangeAt(0).cloneRange();};
+  editor.addEventListener('keyup',save);editor.addEventListener('mouseup',save);editor.addEventListener('touchend',save);
+  editor.addEventListener('paste',e=>{e.preventDefault();const text=e.clipboardData.getData('text/plain');document.execCommand('insertText',false,text)});
+  function restore(){editor.focus();if(savedRange){const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);}}
+  [['B','bold'],['I','italic']].forEach(([label,command])=>{
+    const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-label',command);b.setAttribute('aria-pressed','false');
+    b.addEventListener('pointerdown',e=>e.preventDefault());
+    b.onclick=()=>{restore();document.execCommand(command,false,null);b.setAttribute('aria-pressed',String(document.queryCommandState(command)));save();};toolbar.appendChild(b);
+  });
+  const size=document.createElement('select');size.setAttribute('aria-label','Font size');
+  [12,14,16,18,24,32].forEach(px=>{const o=document.createElement('option');o.value=String(px);o.textContent=px+' px';if(px===16)o.selected=true;size.appendChild(o)});
+  size.addEventListener('pointerdown',save);
+  size.onchange=()=>{
+    const px=size.value;restore();const sel=window.getSelection();
+    if(!sel||!sel.rangeCount||sel.isCollapsed)return;
+    // Native fontSize preserves selections spanning multiple inline elements.
+    document.execCommand('fontSize',false,'7');
+    editor.querySelectorAll('font[size="7"]').forEach(font=>{const span=document.createElement('span');span.style.fontSize=px+'px';while(font.firstChild)span.appendChild(font.firstChild);font.replaceWith(span)});
+    editor.normalize();save();
+  };
+  toolbar.appendChild(size);wrap.append(toolbar,editor);return wrap;
+}
+function showRich(el,record){if(record&&record.html)el.innerHTML=cleanRichHTML(record.html);else el.textContent=(record&&record.text)||'';}
+
 function makeLangRow(containerId, item={language:'',text:''}, removable=true) {
   const row=document.createElement('div');
   row.className='langrow';
@@ -1403,11 +1488,9 @@ function makeLangRow(containerId, item={language:'',text:''}, removable=true) {
     prompt.textContent='WHICH LANGUAGE WILL YOU WRITE IN?';
     row.appendChild(prompt);
   }
-  const textEl=document.createElement(isLongText?'textarea':'input');
-  textEl.className='langText';
-  textEl.placeholder=containerId==='artistProfiles' ? 'Artist profile / biography' : (containerId.indexOf('about')===0 ? 'Text' : (containerId==='descriptions' ? 'Description / commentary' : ''));
-  textEl.value=item.text||'';
-
+  const placeholder=containerId==='artistProfiles' ? 'Artist profile / biography' : (containerId.indexOf('about')===0 ? 'Text' : 'Description / commentary');
+  const textEl=isLongText?createRichEditor(item,placeholder):document.createElement('input');
+  if(!isLongText){textEl.className='langText';textEl.value=item.text||'';}
   row.append(top,textEl);
   return row;
 }
@@ -1426,10 +1509,7 @@ function addLangRow(containerId, item={language:'',text:''}) {
 
 function collectLangRows(containerId, kind) {
   return [...document.querySelectorAll(`#${containerId} .langrow`)]
-    .map(row=>({
-      language:row.querySelector('.langName').value.trim(),
-      text:row.querySelector('.langText').value.trim()
-    }))
+    .map(row=>row.querySelector('.richEditor')?richRowData(row):({language:row.querySelector('.langName').value.trim(),text:row.querySelector('.langText').value.trim()}))
     .filter(x=>x.language || x.text);
 }
 
@@ -1520,11 +1600,7 @@ function makeWordDescriptionRow(item={language:'',text:''}, removable=true) {
   prompt.className='langWritePrompt';
   prompt.textContent='WHICH LANGUAGE WILL YOU WRITE IN?';
 
-  const text=document.createElement('textarea');
-  text.className='langText';
-  text.placeholder='Description / commentary';
-  text.value=item.text||'';
-
+  const text=createRichEditor(item,'Description / commentary');
   row.append(prompt,top,text);
   return row;
 }
@@ -1721,10 +1797,7 @@ function collectWords() {
     pronunciationGuide:entry.querySelector('.wordPronunciationGuide').value.trim(),
     audioData:entry._audioData||null,
     audioDuration:entry._audioDuration||0,
-    descriptions:[...entry.querySelectorAll('.wordDescriptions .langrow')].map(row=>({
-      language:row.querySelector('.langName').value.trim(),
-      text:row.querySelector('.langText').value.trim()
-    })).filter(x=>x.language||x.text),
+    descriptions:[...entry.querySelectorAll('.wordDescriptions .langrow')].map(richRowData).filter(x=>x.language||x.text),
     relatedImages:[...entry.querySelectorAll('.relatedImageRow')].map(row=>({
       imageData:row._imageData||null,
       caption:row.querySelector('.relatedCaption').value.trim(),
@@ -2427,12 +2500,8 @@ function renderArtistLinks(item) {
     qr.src=link.qrData || qrImageURL(url);
     qr.alt=(link.type||'Link')+' QR code';
 
-    const txt=document.createElement('div');
-    txt.className='detailLinkText';
-    txt.textContent=url;
-
     a.appendChild(qr);
-    card.append(header,a,txt);
+    card.append(header,a);
     box.appendChild(card);
   });
 }
@@ -2445,7 +2514,7 @@ function renderDetailProfiles(item){
   const h=document.createElement('h3'); h.textContent='ARTIST PROFILE / BIOGRAPHY';
   const tabs=document.createElement('div'); tabs.className='profileTabs';
   const text=document.createElement('div'); text.className='detailProfileText';
-  const render=i=>{ text.textContent=profiles[i].text||''; [...tabs.children].forEach((b,j)=>b.classList.toggle('active',i===j)); };
+  const render=i=>{ showRich(text,profiles[i]); [...tabs.children].forEach((b,j)=>b.classList.toggle('active',i===j)); };
   profiles.forEach((p,i)=>{ const b=document.createElement('button'); b.type='button'; b.className='profileTab'; b.textContent=p.language||`Language ${i+1}`; b.onclick=()=>render(i); tabs.appendChild(b); });
   box.append(h,tabs,text); render(0);
 }
@@ -2584,64 +2653,95 @@ function resumeFloating(){
   stopFloating();startRelationCycle();floatLast=null;floatRAF=requestAnimationFrame(animateFloating);
 }
 function fitAboutToViewport(){
-  const page=document.getElementById('aboutPage'),grid=document.getElementById('aboutExhibitionImages');if(!page||page.style.display!=='block')return;
+  const page=document.getElementById('aboutPage'),grid=document.getElementById('aboutExhibitionImages');
+  if(!page||page.style.display!=='block'||!grid)return;
   const inner=page.querySelector('.aboutPageInner');if(!inner)return;
-  grid.style.maxHeight='42vh';grid.style.flexBasis='42vh';
-  [...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='34vh');
+  grid.style.maxHeight='32vh';grid.style.flexBasis='auto';
+  [...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='25vh');
   requestAnimationFrame(()=>{
-    if(inner.scrollHeight>inner.clientHeight){grid.style.maxHeight='30vh';grid.style.flexBasis='30vh';[...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='24vh');}
-    requestAnimationFrame(()=>{if(inner.scrollHeight>inner.clientHeight){grid.style.maxHeight='22vh';grid.style.flexBasis='22vh';[...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='17vh');}});
+    if(inner.scrollHeight>inner.clientHeight){
+      grid.style.maxHeight='23vh';
+      [...grid.querySelectorAll('img')].forEach(img=>img.style.maxHeight='17vh');
+    }
   });
 }
+
 function openArtistDetail(item,initialWordIndex=0,originEl=null,originKind='artist') {
   detailTransitionOrigin = captureTransitionOrigin(originEl,originKind);
   const detail=document.getElementById('artistDetail');
-  const detailInner=detail.querySelector('.detailInner');
-  // A portrait opens the artist profile; a word node opens the selected entry.
-  const profileMode = originKind === 'artist';
+  const scroller=detail.querySelector('.detailInner');
+  const profileMode=(originKind==='artist');
+
+  const resetDetailScroll=()=>{
+    try{ if(scroller) scroller.scrollTo({top:0,left:0,behavior:'auto'}); }catch(e){ if(scroller){scroller.scrollTop=0;scroller.scrollLeft=0;} }
+    if(scroller){scroller.scrollTop=0;scroller.scrollLeft=0;}
+    detail.scrollTop=0;
+  };
+
   document.getElementById('detailLocal').textContent=item.artistNameLocal||item.artistName||'';
   document.getElementById('detailLatin').textContent=item.artistNameLatin||'';
+  document.getElementById('detailRole').textContent=item.titleEnglish||item.titleLocal||'';
   document.getElementById('detailBase').textContent=[item.baseCity,item.baseCountry].filter(Boolean).join(' / ') || item.base || '';
   const img=document.getElementById('detailThumb');
   const photo=item.profilePhotoData||item.thumbnailData;
   if(photo){img.src=photo;img.style.visibility='visible'}else{img.removeAttribute('src');img.style.visibility='hidden'}
+
   renderDetailProfiles(item);
   renderArtistLinks(item);
+
+  const profile=document.getElementById('detailProfile');
+  const links=document.getElementById('detailLinks');
+  const tabs=document.getElementById('detailWordTabs');
+  const wordEl=document.getElementById('detailWord');
+  const guide=document.getElementById('detailGuide');
+  const play=document.getElementById('playWord');
+  const descBox=document.getElementById('detailDescriptions');
+  const images=document.getElementById('detailImages');
+
+  // Portrait = artist profile only. Word square = selected entry only.
+  if(profile) profile.style.display=profileMode && profile.innerHTML ? 'block' : 'none';
+  if(links) links.style.display=profileMode ? '' : 'none';
+  [tabs,wordEl,guide,play,descBox,images].forEach(el=>{if(el) el.style.display=profileMode?'none':'';});
+
   const words=legacyWords(item);
-  const tabs=document.getElementById('detailWordTabs'); tabs.innerHTML='';
-  const wordEls=[tabs,document.getElementById('detailWord'),document.getElementById('detailGuide'),document.getElementById('playWord'),document.getElementById('detailDescriptions'),document.getElementById('detailImages')];
-  wordEls.forEach(el=>{ if(el) el.style.display=profileMode?'none':''; });
-  // Artist links belong to the profile page; entry pages focus on the selected word.
-  const links=document.getElementById('detailLinks'); if(links) links.style.display=profileMode?'':'none';
-  const profile=document.getElementById('detailProfile'); if(profile) profile.style.display=profileMode && profile.innerHTML ? 'block' : 'none';
+  tabs.innerHTML='';
   const renderWord=(index)=>{
     const w=words[index]||{};
-    document.getElementById('detailWord').textContent=w.word||'';
-    document.getElementById('detailGuide').textContent=w.pronunciationGuide||'';
-    const descBox=document.getElementById('detailDescriptions'); descBox.innerHTML='';
-    const descriptions=(Array.isArray(w.descriptions)?w.descriptions:[]).filter(d=>d&&(d.language||d.text));
+    wordEl.textContent=w.word||'';
+    guide.textContent=w.pronunciationGuide||'';
+    descBox.innerHTML='';
+    const descriptions=(Array.isArray(w.descriptions)?w.descriptions:[]).filter(d=>d&&(d.language||d.text||d.html));
     if(descriptions.length){
       const title=document.createElement('h3');title.textContent='DESCRIPTION / COMMENTARY';descBox.appendChild(title);
       const langTabs=document.createElement('div');langTabs.className='detailLangTabs';descBox.appendChild(langTabs);
       const content=document.createElement('div');content.className='detailDescriptionBlock';descBox.appendChild(content);
-      const rd=di=>{content.innerHTML='';const text=document.createElement('div');text.className='detailDescriptionText';text.textContent=descriptions[di].text||'';content.appendChild(text);[...langTabs.children].forEach((btn,i)=>btn.classList.toggle('active',i===di));};
-      descriptions.forEach((d,di)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailLangTab';btn.textContent=d.language||`Language ${di+1}`;btn.onclick=()=>rd(di);langTabs.appendChild(btn)}); rd(0);
+      const rd=di=>{content.innerHTML='';const text=document.createElement('div');text.className='detailDescriptionText';showRich(text,descriptions[di]);content.appendChild(text);[...langTabs.children].forEach((btn,i)=>btn.classList.toggle('active',i===di));};
+      descriptions.forEach((d,di)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailLangTab';btn.textContent=d.language||`Language ${di+1}`;btn.onclick=()=>{rd(di);resetDetailScroll();};langTabs.appendChild(btn)}); rd(0);
     }
     renderDetailImages(w);
-    const audio=document.getElementById('detailAudio'),play=document.getElementById('playWord');audio.pause();audio.currentTime=0;
+    const audio=document.getElementById('detailAudio');audio.pause();audio.currentTime=0;
     if(w.audioData){audio.src=w.audioData;play.style.display='inline-flex';play.onclick=()=>{audio.currentTime=0;audio.play()}}else{audio.removeAttribute('src');play.style.display='none'}
     [...tabs.children].forEach((btn,i)=>btn.classList.toggle('active',i===index));
+    resetDetailScroll();
   };
-  if(words.length>1){ words.forEach((w,index)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailWordTab';btn.textContent=w.word||`WORD ${String(index+1).padStart(2,'0')}`;btn.onclick=()=>renderWord(index);tabs.appendChild(btn)}); }
-  if(!profileMode) renderWord(Math.max(0,Math.min(initialWordIndex,words.length-1)));
+
+  if(!profileMode){
+    if(words.length>1){ words.forEach((w,index)=>{const btn=document.createElement('button');btn.type='button';btn.className='detailWordTab';btn.textContent=w.word||`WORD ${String(index+1).padStart(2,'0')}`;btn.onclick=()=>renderWord(index);tabs.appendChild(btn)}); }
+    renderWord(Math.max(0,Math.min(initialWordIndex,words.length-1)));
+  } else {
+    const audio=document.getElementById('detailAudio');audio.pause();audio.removeAttribute('src');
+  }
+
+  // Reset BEFORE display and again after layout/transition. Safari can restore a nested
+  // overflow scroller asynchronously, so one scrollTop=0 is not enough.
+  resetDetailScroll();
   detail.style.display='block'; stopFloating(); stopBorderDrawing();
-  // Reset the internal scroller before every detail open. This prevents Safari from
-  // restoring the previous scroll position and showing a page from mid-text.
-  if(detailInner){ detailInner.scrollTop=0; detailInner.scrollLeft=0; }
-  animateDetailOpen(detailTransitionOrigin);
-  requestAnimationFrame(()=>{
-    if(detailInner){ detailInner.scrollTop=0; detailInner.scrollLeft=0; }
-    requestAnimationFrame(()=>{ if(detailInner) detailInner.scrollTop=0; });
+  resetDetailScroll();
+  requestAnimationFrame(()=>{resetDetailScroll();requestAnimationFrame(resetDetailScroll);});
+  animateDetailOpen(detailTransitionOrigin).then(()=>{
+    resetDetailScroll();
+    setTimeout(resetDetailScroll,60);
+    setTimeout(resetDetailScroll,220);
   });
 }
 
@@ -2745,7 +2845,7 @@ document.addEventListener('keydown',e=>{
 function renderAboutLanguageGroup(tabsId,textId,rows){
   const tabs=document.getElementById(tabsId),text=document.getElementById(textId);tabs.innerHTML='';text.textContent='';
   const data=(Array.isArray(rows)?rows:[]).filter(x=>x&&(x.language||x.text));
-  const render=i=>{text.textContent=(data[i]&&data[i].text)||'';[...tabs.children].forEach((b,j)=>b.classList.toggle('active',i===j));};
+  const render=i=>{showRich(text,data[i]);[...tabs.children].forEach((b,j)=>b.classList.toggle('active',i===j));};
   data.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='aboutTab';b.textContent=x.language||`Language ${i+1}`;b.onclick=()=>render(i);tabs.appendChild(b)});
   if(data.length)render(0);
 }
@@ -2851,33 +2951,38 @@ async function returnToAdmin() {
   setTimeout(()=>{ exhibitionAuthorizedExit=false; },100);
 }
 
+let holdTriggered=false;
 const startHold=(e)=>{
-  if(document.getElementById('exhibition').style.display!=='block') return;
-  if(e && e.cancelable) e.preventDefault();
-  if(holdActive) return;
-  holdActive=true;
-  if(holdTimer) clearTimeout(holdTimer);
-  holdTimer=setTimeout(async()=>{
-    holdTimer=null;
-    holdActive=false;
-    const pin=prompt('ADMIN PIN');
-    if(pin==='1234') await returnToAdmin();
+  if(document.getElementById('exhibition').style.display!=='block')return;
+  if(e && e.cancelable)e.preventDefault();
+  if(holdActive)return;
+  holdActive=true;holdTriggered=false;
+  clearTimeout(holdTimer);
+  holdTimer=setTimeout(()=>{
+    holdTimer=null;holdActive=false;holdTriggered=true;
+    // Let iPad finish its touch gesture before opening a native dialog.
+    setTimeout(async()=>{
+      const pin=prompt('ADMIN PIN');
+      if(pin==='1234')await returnToAdmin();
+    },80);
   },5000);
 };
 const cancelHold=(e)=>{
-  if(e && e.cancelable) e.preventDefault();
-  if(holdTimer) clearTimeout(holdTimer);
-  holdTimer=null;
-  holdActive=false;
+  if(e && e.cancelable)e.preventDefault();
+  clearTimeout(holdTimer);holdTimer=null;holdActive=false;
 };
 if(hotspot){
-  // One exhibition-wide hotspot. Do not cancel merely because the finger drifts a few pixels.
-  hotspot.addEventListener('pointerdown',startHold,{passive:false});
-  hotspot.addEventListener('pointerup',cancelHold,{passive:false});
-  hotspot.addEventListener('pointercancel',cancelHold,{passive:false});
-  hotspot.addEventListener('touchstart',startHold,{passive:false});
-  hotspot.addEventListener('touchend',cancelHold,{passive:false});
-  hotspot.addEventListener('touchcancel',cancelHold,{passive:false});
+  // iPad Safari supports touch events; avoid pointercancel ending the timer prematurely.
+  const touchCapable=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+  if(touchCapable){
+    hotspot.addEventListener('touchstart',startHold,{passive:false});
+    hotspot.addEventListener('touchend',cancelHold,{passive:false});
+    hotspot.addEventListener('touchcancel',cancelHold,{passive:false});
+  }else{
+    hotspot.addEventListener('pointerdown',startHold,{passive:false});
+    hotspot.addEventListener('pointerup',cancelHold,{passive:false});
+    hotspot.addEventListener('pointercancel',cancelHold,{passive:false});
+  }
   hotspot.addEventListener('contextmenu',e=>e.preventDefault());
 }
 
