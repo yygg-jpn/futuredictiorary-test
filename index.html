@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Future Dictionary v11.24 — Admin</title>
+<title>Future Dictionary v11.25 — Admin</title>
 <style>
   :root {
     --bg:#CFCFCF;
@@ -1245,12 +1245,12 @@ to { transform:translate(12px,9px); } }
       </div>
     </aside>
   </div>
-  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.24</div>
+  <div class="footerCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.25</div>
 </div>
 <div id="exhibition" style="display:none;position:fixed;inset:0;background:#CFCFCF;z-index:1000;overflow:hidden;">
   <div id="adminHotspot" aria-label="Admin hotspot" style="position:fixed;right:0;bottom:0;width:100px;height:100px;z-index:2147483647;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:transparent;"></div>
   <div id="relationLaserLayer"></div>
-  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.24</div>
+  <div class="exhibitionCredit">Future Dictionary © 2026<br>Developed by yygg<br>Version 11.25</div>
   <div id="startPage" class="startPage">
     <div class="startPageInner">
       <div id="welcomeLanguages" class="welcomeLanguages"></div>
@@ -3017,7 +3017,7 @@ function renderAboutImages(images){
   });
 }
 let aboutAutoTimer=null;
-const ABOUT_AUTO_MS=20000;
+// v11.25: ABOUT remains open until ENTER FUTURE DICTIONARY is tapped.
 const IDLE_RESET_MS=5*60*1000;
 let idleResetTimer=null;
 const WELCOME_LINES=[
@@ -3046,7 +3046,7 @@ function showStartPage(){
 function showAboutPage(){
   const a=getAboutData(); renderAboutLanguageGroup('aboutProjectTabs','aboutProjectText',a.project); renderAboutImages(a.images);
   document.getElementById('startPage').style.display='none'; document.getElementById('splash').style.display='none'; document.getElementById('aboutPage').style.display='block'; document.getElementById('exhibitionTop').style.display='none'; stopBorderDrawing(); fitAboutToViewport();
-  clearTimeout(aboutAutoTimer); aboutAutoTimer=setTimeout(showDictionaryTop,ABOUT_AUTO_MS); resetIdleTimer();
+  clearTimeout(aboutAutoTimer); resetIdleTimer();
 }
 async function showDictionaryTop(){
   clearTimeout(aboutAutoTimer); document.getElementById('startPage').style.display='none'; document.getElementById('aboutPage').style.display='none';document.getElementById('artistDetail').style.display='none';document.getElementById('exhibitionTop').style.display='block';await buildFloatingArtists(exhibitionItems); startBorderDrawing(); resetIdleTimer();
